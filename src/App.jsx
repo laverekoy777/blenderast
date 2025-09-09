@@ -24,7 +24,6 @@ import {
    ДАННЫЕ
    ========================================================= */
 
-// Проекты портфолио (каждый с набором кадров)
 const portfolio = [
   {
     title: "Загородный дом — вечер",
@@ -96,7 +95,6 @@ const Stat = ({ value, label }) => (
   </div>
 );
 
-// Устойчивый FAQ на <details> без «дёрганий»
 function QA({ q, a }) {
   return (
     <details className="group border border-neutral-800 rounded-xl overflow-hidden">
@@ -118,7 +116,7 @@ function QA({ q, a }) {
 }
 
 /* =========================================================
-   ПОРТФОЛИО (табы + сетка + лайтбокс-слайдер)
+   ПОРТФОЛИО
    ========================================================= */
 
 function PortfolioTabs() {
@@ -145,7 +143,6 @@ function PortfolioTabs() {
 
   return (
     <div>
-      {/* Tabs */}
       <div className="flex flex-wrap gap-2 mb-6">
         {categories.map((c) => (
           <button
@@ -162,7 +159,6 @@ function PortfolioTabs() {
         ))}
       </div>
 
-      {/* Grid */}
       <motion.div layout className="grid md:grid-cols-3 gap-6">
         <AnimatePresence>
           {items.map((p, i) => (
@@ -200,7 +196,6 @@ function PortfolioTabs() {
         </AnimatePresence>
       </motion.div>
 
-      {/* LIGHTBOX-СЛАЙДЕР */}
       <AnimatePresence>
         {lightbox && (
           <motion.div
@@ -292,7 +287,6 @@ const sectionReveal = {
 function BackgroundFX() {
   return (
     <div aria-hidden className="pointer-events-none fixed inset-0 -z-10">
-      {/* мягкая сетка */}
       <div
         className="absolute inset-0 opacity-[0.04]"
         style={{
@@ -301,7 +295,6 @@ function BackgroundFX() {
           backgroundSize: "36px 36px",
         }}
       />
-      {/* радиальный свет */}
       <div
         className="absolute -top-40 left-1/2 -translate-x-1/2 h-[520px] w-[720px] rounded-full blur-3xl opacity-20"
         style={{ background: "radial-gradient(600px 300px at center, rgba(56,189,248,.6), transparent 60%)" }}
@@ -315,6 +308,21 @@ function BackgroundFX() {
    ========================================================= */
 
 export default function Landing3D() {
+  const [quote, setQuote] = useState({
+    total: BASE_PRODUCT.price,
+    qtyAngle: 0,
+    extraTimeOfDay: false,
+    extraSeason: false,
+    extraWeather: false,
+    breakdown: {
+      base: BASE_PRODUCT.price,
+      extraAngle: 0,
+      extraTimeOfDay: 0,
+      extraSeason: 0,
+      extraWeather: 0,
+    },
+  });
+
   return (
     <div className="min-h-screen bg-neutral-950 text-gray-100">
       <BackgroundFX />
@@ -326,7 +334,7 @@ export default function Landing3D() {
             <Sparkles className="h-5 w-5 text-emerald-400" />
             <span className="font-semibold">blenderast</span>
           </div>
-        <nav className="hidden md:flex items-center gap-6 text-sm">
+          <nav className="hidden md:flex items-center gap-6 text-sm">
             <a href="#work" className="hover:opacity-70">Портфолио</a>
             <a href="#why" className="hover:opacity-70">Почему мы</a>
             <a href="#pricing" className="hover:opacity-70">Прайс</a>
@@ -453,7 +461,7 @@ export default function Landing3D() {
             <h2 className="text-3xl font-bold">Прайс</h2>
             <p className="text-sm text-gray-400">База + быстрый выбор доп. опций. Смету фиксирую после брифа.</p>
           </div>
-          <PricingConfigurator />
+          <PricingConfigurator onChange={setQuote} />
         </div>
       </section>
 
@@ -512,30 +520,26 @@ export default function Landing3D() {
         </motion.div>
       </section>
 
-      {/* ABOUT (улучшённый блок «Что нужно для старта») */}
+      {/* ABOUT (расширённый + чек-лист) */}
       <section id="about" className="py-16 scroll-mt-24">
         <div className="max-w-6xl mx-auto px-4 grid md:grid-cols-2 gap-10 items-start">
-          {/* Левая колонка: коротко о специалисте */}
-           <div>
+          <div>
             <h2 className="text-3xl font-bold mb-4">Обо мне</h2>
             <p className="text-gray-300 leading-relaxed mb-4">
-              Я Марат — спец по архвизу. Делаю не «красивые картинки», а кадры, которые помогают продать идею проекта:
-              они вызывают доверие у инвесторов и понятны покупателю, потому что выглядят как фото.
+              Я Марат — 3D-визуализатор, который совмещает художественность и инженерную точность. Делаю кадры, которые
+              помогают <span className="text-emerald-400">продавать идею проекта</span>: они понятны инвестору, убедительны для маркетинга и не
+              противоречат реальным материалам и узлам. Работал с частными застройщиками и девелоперами по России.
             </p>
             <p className="text-gray-300 leading-relaxed mb-4">
-              На счету — 50+ проектов по России: от частных интерьеров до жилых комплексов. Среди клиентов: «Золотое
-              Сечение», «Modul Modus», «Летник ПРО», «Базовый Модуль». Меня ценят за скорость и предсказуемость.
-            </p>
-            <p className="text-gray-300 leading-relaxed mb-4">
-              В отличие от студий, где один кадр делают неделями, первые превью показываю через 48 часов — так быстрее
-              согласовывать детали и экономить бюджет.
+              Мой процесс — быстрый и прозрачный: на 1–2 день показываю превью, чтобы рано зафиксировать ракурсы и свет.
+              Далее — материалы/детализация, финал в 4K. Два раунда правок включены — без доплат за базовые корректировки.
             </p>
             <p className="text-gray-300 leading-relaxed">
-              Политика простая: <span className="text-emerald-400 font-medium">правки входят в стоимость</span> до совпадения с ожиданиями. Поэтому вы заранее понимаете итог и сроки — без сюрпризов.
+              Люблю сложные задачи (нестандартные фасады, ландшафт, вечерние сцены с атмосферой). Сроки и бюджет фиксирую
+              в смете, держу связь в мессенджере, могу подписать NDA.
             </p>
           </div>
 
-          {/* Правая колонка: улучшенный чек-лист со ступенями */}
           <div className="bg-neutral-900 border border-neutral-800 rounded-2xl p-6">
             <h3 className="text-xl font-semibold mb-5">Что нужно от вас для старта</h3>
 
@@ -546,37 +550,34 @@ export default function Landing3D() {
                 </div>
                 <div>
                   <div className="font-medium">Планировки/чертежи с размерами</div>
-                  <p className="text-sm text-gray-400">PDF/DWG/сканы — главное, чтобы были габариты и отметки высот.</p>
+                  <p className="text-sm text-gray-400">PDF/DWG/сканы — важны габариты, отметки высот, материалы.</p>
                 </div>
               </li>
-
               <li className="flex items-start gap-4">
                 <div className="shrink-0 h-10 w-10 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center">
                   <FileText className="h-5 w-5 text-emerald-400" />
                 </div>
                 <div>
                   <div className="font-medium">Краткое ТЗ</div>
-                  <p className="text-sm text-gray-400">Материалы фасадов/интерьера, стилистика, ограничения по срокам и бюджету.</p>
+                  <p className="text-sm text-gray-400">Стилистика, сроки/бюджет, сценарии использования кадров.</p>
                 </div>
               </li>
-
               <li className="flex items-start gap-4">
                 <div className="shrink-0 h-10 w-10 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center">
                   <Palette className="h-5 w-5 text-emerald-400" />
                 </div>
                 <div>
                   <div className="font-medium">Примеры/референсы</div>
-                  <p className="text-sm text-gray-400">Ссылки/папка: желаемый стиль, свет, окружение, настроение.</p>
+                  <p className="text-sm text-gray-400">Желаемый стиль, свет, окружение, атмосфера. Достаточно ссылок или архива.</p>
                 </div>
               </li>
-
               <li className="flex items-start gap-4">
                 <div className="shrink-0 h-10 w-10 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center">
                   <ImageIcon className="h-5 w-5 text-emerald-400" />
                 </div>
                 <div>
                   <div className="font-medium">Материалы по окружению (необязательно)</div>
-                  <p className="text-sm text-gray-400">Фото участка, пожелания по ландшафту, ориентация по сторонам света.</p>
+                  <p className="text-sm text-gray-400">Фото участка, ориентация по сторонам света, пожелания по зелени/ландшафту.</p>
                 </div>
               </li>
             </ol>
@@ -584,56 +585,140 @@ export default function Landing3D() {
             <div className="mt-6 rounded-xl border border-emerald-900/40 bg-gradient-to-r from-emerald-500/10 to-cyan-500/10 p-4">
               <p className="text-sm text-gray-200">
                 Эти материалы помогут <span className="text-emerald-400 font-medium">быстро оценить сроки</span> и дать{" "}
-                <span className="text-emerald-400 font-medium">точную смету</span>. Если чего-то нет — подскажу, как собрать
-                минимальный пакет.
+                <span className="text-emerald-400 font-medium">точную смету</span>. Если чего-то нет — подскажу, как собрать минимальный пакет.
               </p>
             </div>
           </div>
         </div>
       </section>
 
-       {/* BRIEF FORM */}
+      {/* BRIEF FORM (центр + передача из калькулятора + upload) */}
       <section id="brief" className="py-16 scroll-mt-24">
         <div className="max-w-3xl mx-auto px-4">
           <h2 className="text-3xl font-bold">Получить расчёт и тест-рендер</h2>
-          <p className="text-gray-300 mt-2">
-            Оставьте контакты — пришлю 3 тестовых кадра и смету. Отвечу в течение дня.
-          </p>
+          <p className="text-gray-300 mt-2">Оставьте контакты — пришлю 3 тестовых кадра и смету. Отвечу в течение дня.</p>
 
           <Card className="mt-6 rounded-2xl">
             <CardContent className="p-6">
-              <form method="POST" action="https://formspree.io/f/XXXXYYYY" className="grid md:grid-cols-2 gap-4">
+              <form
+                method="POST"
+                action="https://formspree.io/f/XXXXYYYY"
+                encType="multipart/form-data"
+                className="grid md:grid-cols-2 gap-4"
+              >
                 {/* Honeypot */}
                 <input type="text" name="website" className="hidden" tabIndex={-1} autoComplete="off" />
                 {/* Formspree meta */}
                 <input type="hidden" name="_subject" value="Новый лид: blenderast — расчёт + тест-рендер" />
                 <input type="hidden" name="_redirect" value="https://YOUR-DOMAIN/thank-you" />
 
+                {/* Передаём сводку калькулятора */}
+                <input type="hidden" name="quote_total" value={quote?.total ?? ""} />
+                <input type="hidden" name="quote_breakdown" value={JSON.stringify(quote?.breakdown || {})} />
+                <input
+                  type="hidden"
+                  name="quote_options"
+                  value={JSON.stringify({
+                    qtyAngle: quote?.qtyAngle,
+                    extraTimeOfDay: quote?.extraTimeOfDay,
+                    extraSeason: quote?.extraSeason,
+                    extraWeather: quote?.extraWeather,
+                  })}
+                />
+
+                {/* Контакты */}
                 <Input required name="name" placeholder="Имя" />
                 <Input required type="email" name="email" placeholder="E-mail" />
-                <Input name="phone" placeholder="Телефон / WhatsApp" />
-                <Input name="city" placeholder="Город / Часовой пояс" />
+
+                {/* Проектные данные */}
+                <div className="md:col-span-2 grid md:grid-cols-2 gap-4">
+                  <select
+                    name="project_type"
+                    className="w-full rounded-md border border-neutral-700 bg-neutral-900 p-2 text-sm"
+                    defaultValue="Экстерьер"
+                  >
+                    <option value="Экстерьер">Экстерьер</option>
+                    <option value="Интерьер">Интерьер</option>
+                    <option value="Коммерческий">Коммерческий</option>
+                  </select>
+                  <Input name="area" placeholder="Площадь, м²" />
+                </div>
+
+                <Input name="deadline" placeholder="Сроки (например: 10–14 дней)" />
+                <Input name="budget" placeholder="Ориентир по бюджету" />
+
+                {/* Кол-во ракурсов — база 3 + допы из калькулятора */}
+                <Input name="angles" placeholder="Количество ракурсов" value={3 + (quote?.qtyAngle || 0)} readOnly />
+
+                {/* Референсы/файлы */}
+                <div className="md:col-span-2">
+                  <label className="block text-sm mb-1">Загрузка референсов (изображения/PDF/ZIP до 20MB)</label>
+                  <input
+                    type="file"
+                    name="references"
+                    multiple
+                    accept="image/*,.pdf,.zip"
+                    className="w-full rounded-md border border-neutral-700 bg-neutral-900 p-2 text-sm"
+                  />
+                </div>
+
                 <div className="md:col-span-2">
                   <Textarea
                     name="details"
-                    placeholder="Опишите объект: площадь, стиль, сроки, референсы"
+                    placeholder="Опишите объект: площадь, стиль, сроки, ссылки на референсы"
                     className="min-h-[120px]"
                   />
                 </div>
 
                 <div className="md:col-span-2 flex items-center justify-between gap-4">
                   <div className="text-xs text-gray-400">
-                    Защита от спама: honeypot + ограничение частоты. Для боевого сайта добавьте Cloudflare Turnstile/reCAPTCHA.
+                    Защита: honeypot + ограничение частоты. Для продакшна добавьте Cloudflare Turnstile/reCAPTCHA.
                   </div>
                   <Button type="submit" className="rounded-2xl bg-emerald-500 text-neutral-900">
                     Отправить запрос
                   </Button>
                 </div>
               </form>
+
+              {/* Визуальная сводка калькулятора прямо под формой */}
+              <div className="mt-6 rounded-xl border border-neutral-800 bg-neutral-900 p-4 text-sm text-gray-300">
+                <div className="flex items-center justify-between">
+                  <span>Текущая смета:</span>
+                  <span className="font-semibold bg-gradient-to-r from-emerald-400 to-cyan-300 bg-clip-text text-transparent">
+                    {new Intl.NumberFormat("ru-RU").format(quote.total)} ₽
+                  </span>
+                </div>
+                <div className="mt-2 grid md:grid-cols-2 gap-x-6 gap-y-1 text-gray-400">
+                  <div>База: {new Intl.NumberFormat("ru-RU").format(quote.breakdown.base)} ₽</div>
+                  <div>
+                    Доп. ракурсы: {quote.qtyAngle} ×{" "}
+                    {new Intl.NumberFormat("ru-RU").format(ADDONS.find((a) => a.key === "extraAngle").price)} ₽
+                  </div>
+                  {quote.extraTimeOfDay && (
+                    <div>
+                      Др. время суток:{" "}
+                      {new Intl.NumberFormat("ru-RU").format(ADDONS.find((a) => a.key === "extraTimeOfDay").price)} ₽
+                    </div>
+                  )}
+                  {quote.extraSeason && (
+                    <div>
+                      Др. время года:{" "}
+                      {new Intl.NumberFormat("ru-RU").format(ADDONS.find((a) => a.key === "extraSeason").price)} ₽
+                    </div>
+                  )}
+                  {quote.extraWeather && (
+                    <div>
+                      Другая погода:{" "}
+                      {new Intl.NumberFormat("ru-RU").format(ADDONS.find((a) => a.key === "extraWeather").price)} ₽
+                    </div>
+                  )}
+                </div>
+              </div>
             </CardContent>
           </Card>
         </div>
       </section>
+
       {/* FAQ */}
       <section id="faq" className="py-16 bg-neutral-900 border-t scroll-mt-24">
         <div className="max-w-6xl mx-auto px-4">
@@ -691,10 +776,10 @@ export default function Landing3D() {
 }
 
 /* =========================================================
-   КОМПОНЕНТ ПРАЙС-КОНФИГУРАТОР
+   ПРАЙС-КОНФИГУРАТОР
    ========================================================= */
 
-function PricingConfigurator() {
+function PricingConfigurator({ onChange }) {
   const [qtyAngle, setQtyAngle] = useState(0);
   const [opt, setOpt] = useState({
     extraTimeOfDay: false,
@@ -702,13 +787,23 @@ function PricingConfigurator() {
     extraWeather: false,
   });
 
-  // Пересчёт суммы
   const total =
     BASE_PRODUCT.price +
     qtyAngle * getAddon("extraAngle").price +
     (opt.extraTimeOfDay ? getAddon("extraTimeOfDay").price : 0) +
     (opt.extraSeason ? getAddon("extraSeason").price : 0) +
     (opt.extraWeather ? getAddon("extraWeather").price : 0);
+
+  useEffect(() => {
+    const breakdown = {
+      base: BASE_PRODUCT.price,
+      extraAngle: qtyAngle * getAddon("extraAngle").price,
+      extraTimeOfDay: opt.extraTimeOfDay ? getAddon("extraTimeOfDay").price : 0,
+      extraSeason: opt.extraSeason ? getAddon("extraSeason").price : 0,
+      extraWeather: opt.extraWeather ? getAddon("extraWeather").price : 0,
+    };
+    onChange && onChange({ total, qtyAngle, ...opt, breakdown });
+  }, [total, qtyAngle, opt, onChange]);
 
   function getAddon(k) {
     return ADDONS.find((a) => a.key === k) || { price: 0 };
@@ -854,6 +949,7 @@ function PricingConfigurator() {
 /* =========================================================
    УТИЛИТЫ
    ========================================================= */
+
 function formatRub(n) {
   return new Intl.NumberFormat("ru-RU", {
     style: "currency",
