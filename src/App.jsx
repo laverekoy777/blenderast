@@ -16,7 +16,11 @@ import {
   Sparkles,
 } from "lucide-react";
 
-// ---------- ДАННЫЕ: проекты с несколькими фото ----------
+/* =========================================================
+   ДАННЫЕ
+   ========================================================= */
+
+// Проекты портфолио (каждый с набором кадров)
 const portfolio = [
   {
     title: "Загородный дом — вечер",
@@ -47,12 +51,30 @@ const portfolio = [
     cover:
       "https://cdn-edge.kwork.ru/files/portfolio/t0/10/73c93bc766488b868e0d166fed66dd6260898aa6-1753879710.webp",
   },
-  // добавляй больше проектов по этому же шаблону
 ];
 
 const categories = ["Все", "Экстерьеры", "Интерьеры", "Коммерческие", "Мастер-план"];
 
-// ---------- МЕЛКИЕ КОМПОНЕНТЫ ----------
+// Прайс: базовый продукт + допы
+const BASE_PRODUCT = {
+  title:
+    "Продающая фотореалистичная 3D-визуализация экстерьера вашего проекта",
+  description:
+    "Включено: 3D-моделирование проекта + визуализация до 3 ракурсов в 4K.",
+  price: 10000, // ₽
+};
+
+const ADDONS = [
+  { key: "extraAngle", label: "Дополнительный ракурс", price: 2000 },
+  { key: "extraTimeOfDay", label: "Доп. вариант: другое время суток", price: 1500 },
+  { key: "extraSeason", label: "Доп. вариант: другое время года", price: 1500 },
+  { key: "extraWeather", label: "Доп. вариант: другая погода", price: 1500 },
+];
+
+/* =========================================================
+   МЕЛКИЕ КОМПОНЕНТЫ
+   ========================================================= */
+
 const Feature = ({ icon: Icon, title, text }) => (
   <div className="flex gap-4">
     <div className="h-12 w-12 rounded-2xl bg-neutral-800 flex items-center justify-center">
@@ -72,14 +94,14 @@ const Stat = ({ value, label }) => (
   </div>
 );
 
-function AccordionItem({ q, a }) {
-  const [open, setOpen] = useState(false);
+// Устойчивый FAQ на <details> без «дёрганий»
+function QA({ q, a }) {
   return (
-    <div className={`border border-neutral-800 rounded-xl overflow-hidden ${open ? "bg-neutral-950" : ""}`}>
-      <button onClick={() => setOpen(!open)} className="w-full text-left p-4 flex items-center justify-between">
+    <details className="group border border-neutral-800 rounded-xl overflow-hidden">
+      <summary className="list-none cursor-pointer p-4 flex items-center justify-between">
         <span className="font-medium">{q}</span>
         <svg
-          className={`h-5 w-5 transition-transform ${open ? "rotate-180 text-emerald-400" : "text-gray-500"}`}
+          className="h-5 w-5 text-gray-500 transition-transform group-open:rotate-180"
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
@@ -87,32 +109,24 @@ function AccordionItem({ q, a }) {
         >
           <path d="M6 9l6 6 6-6" />
         </svg>
-      </button>
-      <AnimatePresence initial={false}>
-        {open && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            className="px-4 pb-4 text-sm text-gray-300"
-          >
-            {a}
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
+      </summary>
+      <div className="px-4 pb-4 text-sm text-gray-300">{a}</div>
+    </details>
   );
 }
 
-// ---------- ПОРТФОЛИО (табы + сетка + лайтбокс-слайдер) ----------
+/* =========================================================
+   ПОРТФОЛИО (табы + сетка + лайтбокс-слайдер)
+   ========================================================= */
+
 function PortfolioTabs() {
   const [active, setActive] = useState("Все");
   const [lightbox, setLightbox] = useState(null); // { images:[], index:0, title:"" }
-
   const items = active === "Все" ? portfolio : portfolio.filter((i) => i.cat === active);
 
   const close = () => setLightbox(null);
-  const next = () => setLightbox((lb) => lb && { ...lb, index: (lb.index + 1) % lb.images.length });
+  const next = () =>
+    setLightbox((lb) => lb && { ...lb, index: (lb.index + 1) % lb.images.length });
   const prev = () =>
     setLightbox((lb) => lb && { ...lb, index: (lb.index - 1 + lb.images.length) % lb.images.length });
 
@@ -146,7 +160,7 @@ function PortfolioTabs() {
         ))}
       </div>
 
-      {/* Grid из проектов */}
+      {/* Grid */}
       <motion.div layout className="grid md:grid-cols-3 gap-6">
         <AnimatePresence>
           {items.map((p, i) => (
@@ -173,6 +187,7 @@ function PortfolioTabs() {
                 </div>
                 <span className="text-xs text-gray-500">{p.cat}</span>
               </div>
+
               {p.images.length > 1 && (
                 <div className="absolute top-2 right-2 text-[11px] bg-black/60 text-white px-2 py-1 rounded-full">
                   {p.images.length} фото
@@ -263,7 +278,10 @@ function PortfolioTabs() {
   );
 }
 
-// ---------- АНИМАЦИИ/ФОН ----------
+/* =========================================================
+   АНИМАЦИИ/ФОН
+   ========================================================= */
+
 const sectionReveal = {
   hidden: { opacity: 0, y: 24 },
   show: (i = 0) => ({ opacity: 1, y: 0, transition: { duration: 0.6, delay: i * 0.08 } }),
@@ -290,13 +308,16 @@ function BackgroundFX() {
   );
 }
 
-// ---------- СТРАНИЦА ----------
+/* =========================================================
+   СТРАНИЦА
+   ========================================================= */
+
 export default function Landing3D() {
   return (
     <div className="min-h-screen bg-neutral-950 text-gray-100">
       <BackgroundFX />
 
-      {/* Nav */}
+      {/* NAV */}
       <header className="sticky top-0 z-40 bg-neutral-950/80 backdrop-blur border-b border-neutral-800">
         <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-2">
@@ -304,21 +325,12 @@ export default function Landing3D() {
             <span className="font-semibold">blenderast</span>
           </div>
           <nav className="hidden md:flex items-center gap-6 text-sm">
-            <a href="#work" className="hover:opacity-70">
-              Портфолио
-            </a>
-            <a href="#why" className="hover:opacity-70">
-              Почему мы
-            </a>
-            <a href="#about" className="hover:opacity-70">
-              Обо мне
-            </a>
-            <a href="#faq" className="hover:opacity-70">
-              FAQ
-            </a>
-            <a href="#brief" className="hover:opacity-70">
-              Получить расчёт
-            </a>
+            <a href="#work" className="hover:opacity-70">Портфолио</a>
+            <a href="#why" className="hover:opacity-70">Почему мы</a>
+            <a href="#pricing" className="hover:opacity-70">Прайс</a>
+            <a href="#about" className="hover:opacity-70">Обо мне</a>
+            <a href="#faq" className="hover:opacity-70">FAQ</a>
+            <a href="#brief" className="hover:opacity-70">Получить расчёт</a>
           </nav>
           <a href="#brief">
             <Button className="rounded-2xl bg-emerald-500 text-neutral-900">Расчёт проекта</Button>
@@ -326,19 +338,23 @@ export default function Landing3D() {
         </div>
       </header>
 
-      {/* Hero */}
+      {/* HERO */}
       <section className="relative overflow-hidden">
         <div className="max-w-6xl mx-auto px-4 py-16 grid md:grid-cols-2 gap-10 items-center">
-          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }}>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
             <h1 className="text-4xl md:text-5xl font-bold leading-tight">
               <span className="bg-gradient-to-r from-sky-400 via-cyan-300 to-emerald-300 bg-clip-text text-transparent">
                 Фотореалистичная 3D-визуализация
               </span>{" "}
-              <span className="whitespace-nowrap">без переплаты</span>
+              без переплаты
             </h1>
             <p className="mt-4 text-gray-300 text-lg">
-              Реализм выше рынка, стоимость ниже конкурентов. В среднем экономим заказчикам до 30–40% бюджета без потери
-              качества.
+              Реализм выше рынка, стоимость ниже конкурентов. В среднем экономим заказчикам до 30–40% бюджета без потери качества.
             </p>
             <div className="mt-6 flex gap-3">
               <a href="#work">
@@ -347,7 +363,10 @@ export default function Landing3D() {
                 </Button>
               </a>
               <a href="#brief">
-                <Button className="rounded-2xl border-emerald-500 text-emerald-400 hover:bg-emerald-900/40" variant="outline">
+                <Button
+                  className="rounded-2xl border-emerald-500 text-emerald-400 hover:bg-emerald-900/40"
+                  variant="outline"
+                >
                   Получить 3 кадра теста <MoveRight className="inline h-4 w-4 ml-1" />
                 </Button>
               </a>
@@ -359,7 +378,13 @@ export default function Landing3D() {
             </div>
           </motion.div>
 
-          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ duration: 0.8 }} className="relative">
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="relative"
+          >
             <motion.div
               initial={{ rotate: -6, y: 20 }}
               whileInView={{ rotate: 0, y: 0 }}
@@ -387,7 +412,7 @@ export default function Landing3D() {
         </div>
       </section>
 
-      {/* Why */}
+      {/* WHY */}
       <section id="why" className="py-14 bg-neutral-900 border-y scroll-mt-24">
         <motion.div
           className="max-w-6xl mx-auto px-4 grid md:grid-cols-3 gap-8"
@@ -403,28 +428,57 @@ export default function Landing3D() {
             />
           </motion.div>
           <motion.div variants={sectionReveal} custom={1}>
-            <Feature icon={Cpu} title="Оптимизированный пайплайн" text="Скрипты/ноды и рендер-ферма → быстрые превью и предсказуемые сроки." />
+            <Feature
+              icon={Cpu}
+              title="Оптимизированный пайплайн"
+              text="Скрипты/ноды и рендер-ферма → быстрые превью и предсказуемые сроки."
+            />
           </motion.div>
           <motion.div variants={sectionReveal} custom={2}>
-            <Feature icon={Shield} title="Прозрачные сроки и цена" text="Фикс по брифу. Исходники/кадры в срок, 2 раунда правок включены." />
+            <Feature
+              icon={Shield}
+              title="Прозрачные сроки и цена"
+              text="Фикс по брифу. Исходники/кадры в срок, 2 раунда правок включены."
+            />
           </motion.div>
         </motion.div>
       </section>
 
-      {/* Work */}
+      {/* PRICING */}
+      <section id="pricing" className="py-16 bg-neutral-950 border-y scroll-mt-24">
+        <div className="max-w-6xl mx-auto px-4">
+          <div className="flex items-end justify-between gap-4 mb-8">
+            <h2 className="text-3xl font-bold">Прайс</h2>
+            <p className="text-sm text-gray-400">
+              База + быстрый выбор доп. опций. Смету фиксирую после брифа.
+            </p>
+          </div>
+
+          <PricingConfigurator />
+        </div>
+      </section>
+
+      {/* WORK */}
       <section id="work" className="py-16 scroll-mt-24">
         <div className="max-w-6xl mx-auto px-4">
           <div className="flex items-end justify-between gap-4 mb-6">
             <h2 className="text-3xl font-bold">Портфолио</h2>
-            <p className="text-sm text-gray-400">Фильтруйте по категориям: экстерьеры, интерьеры, коммерческие, мастер-план.</p>
+            <p className="text-sm text-gray-400">
+              Фильтруйте по категориям: экстерьеры, интерьеры, коммерческие, мастер-план.
+            </p>
           </div>
           <PortfolioTabs />
         </div>
       </section>
 
-      {/* Social proof */}
+      {/* SOCIAL PROOF */}
       <section className="py-12 bg-neutral-950">
-        <motion.div className="max-w-6xl mx-auto px-4 grid md:grid-cols-3 gap-6" initial="hidden" whileInView="show" viewport={{ once: true }}>
+        <motion.div
+          className="max-w-6xl mx-auto px-4 grid md:grid-cols-3 gap-6"
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true }}
+        >
           <motion.div variants={sectionReveal} className="transition-transform hover:-translate-y-1">
             <Card>
               <CardContent className="p-6">
@@ -432,7 +486,9 @@ export default function Landing3D() {
                   <Star className="h-5 w-5" />
                   <span className="font-semibold">98% довольных заказчиков</span>
                 </div>
-                <p className="text-sm text-gray-300 mt-2">Средняя оценка 4.9/5. NDA — по запросу. Дедлайны соблюдаем.</p>
+                <p className="text-sm text-gray-300 mt-2">
+                  Средняя оценка 4.9/5. NDA — по запросу. Дедлайны соблюдаем.
+                </p>
               </CardContent>
             </Card>
           </motion.div>
@@ -443,7 +499,9 @@ export default function Landing3D() {
                   <Zap className="h-5 w-5" />
                   <span className="font-semibold">Первый драфт — 48 часов</span>
                 </div>
-                <p className="text-sm text-gray-300 mt-2">Этапинг: бриф → серый каркас → материалы/свет → финал.</p>
+                <p className="text-sm text-gray-300 mt-2">
+                  Этапинг: бриф → серый каркас → материалы/свет → финал.
+                </p>
               </CardContent>
             </Card>
           </motion.div>
@@ -454,65 +512,16 @@ export default function Landing3D() {
                   <Shield className="h-5 w-5" />
                   <span className="font-semibold">Гарантия правок</span>
                 </div>
-                <p className="text-sm text-gray-300 mt-2">2 раунда базовых правок включены. Далее — почасово по прайсу.</p>
+                <p className="text-sm text-gray-300 mt-2">
+                  2 раунда базовых правок включены. Далее — почасово.
+                </p>
               </CardContent>
             </Card>
           </motion.div>
         </motion.div>
       </section>
 
-      {/* Pricing teaser */}
-      <section className="py-14 bg-neutral-900" id="pricing">
-        <div className="max-w-6xl mx-auto px-4">
-          <h2 className="text-3xl font-bold mb-6">Цена ниже, качество выше</h2>
-          <div className="grid md:grid-cols-2 gap-6">
-            <Card className="rounded-2xl border-neutral-800">
-              <CardHeader>
-                <CardTitle>Рынок</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ul className="space-y-2 text-sm text-gray-300">
-                  <li className="flex items-start gap-2">
-                    <Check className="h-4 w-4 text-gray-400" />
-                    Качество: среднее/низкое
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <Check className="h-4 w-4 text-gray-400" />
-                    Сроки: 7–14 дней
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <Check className="h-4 w-4 text-gray-400" />
-                    Цена: условно X × 3
-                  </li>
-                </ul>
-              </CardContent>
-            </Card>
-            <Card className="rounded-2xl border-neutral-800 ring-1 ring-neutral-800">
-              <CardHeader>
-                <CardTitle>Мы</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ul className="space-y-2 text-sm text-gray-100">
-                  <li className="flex items-start gap-2">
-                    <Check className="h-4 w-4 text-emerald-400" />
-                    Фотореализм: высокий
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <Check className="h-4 w-4 text-emerald-400" />
-                    Сроки: превью 48ч
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <Check className="h-4 w-4 text-emerald-400" />
-                    Цена: X (на 30–60% ниже)
-                  </li>
-                </ul>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </section>
-
-      {/* About */}
+      {/* ABOUT */}
       <section id="about" className="py-16 scroll-mt-24">
         <div className="max-w-6xl mx-auto px-4 grid md:grid-cols-2 gap-10 items-start">
           <div>
@@ -522,16 +531,15 @@ export default function Landing3D() {
               они вызывают доверие у инвесторов и понятны покупателю, потому что выглядят как фото.
             </p>
             <p className="text-gray-300 leading-relaxed mb-4">
-              На счету — 50+ проектов по России: от частных интерьеров до жилых комплексов. Среди клиентов:
-              СК «Золотое Сечение», «Modul Modus», «Летник ПРО», «Базовый Модуль». Меня ценят за скорость и предсказуемость.
+              На счету — 50+ проектов по России: от частных интерьеров до жилых комплексов. Среди клиентов: «Золотое
+              Сечение», «Modul Modus», «Летник ПРО», «Базовый Модуль». Меня ценят за скорость и предсказуемость.
             </p>
             <p className="text-gray-300 leading-relaxed mb-4">
               В отличие от студий, где один кадр делают неделями, первые превью показываю через 48 часов — так быстрее
               согласовывать детали и экономить бюджет.
             </p>
             <p className="text-gray-300 leading-relaxed">
-              Политика простая: <span className="text-emerald-400 font-medium">правки входят в стоимость</span> до совпадения с
-              ожиданиями. Поэтому вы заранее понимаете итог и сроки — без сюрпризов.
+              Политика простая: <span className="text-emerald-400 font-medium">правки входят в стоимость</span> до совпадения с ожиданиями. Поэтому вы заранее понимаете итог и сроки — без сюрпризов.
             </p>
           </div>
           <div className="bg-neutral-900 border border-neutral-800 rounded-2xl p-6">
@@ -541,16 +549,20 @@ export default function Landing3D() {
               <li>Краткое описание: материалы, стилистика, особенности.</li>
               <li>Примеры/референсы желаемого результата.</li>
             </ul>
-            <p className="mt-4 text-sm text-gray-400">Это поможет быстро оценить сроки и дать точную смету.</p>
+            <p className="mt-4 text-sm text-gray-400">
+              Это поможет быстро оценить сроки и дать точную смету.
+            </p>
           </div>
         </div>
       </section>
 
-      {/* Brief form */}
+      {/* BRIEF FORM */}
       <section id="brief" className="py-16 scroll-mt-24">
         <div className="max-w-3xl mx-auto px-4">
           <h2 className="text-3xl font-bold">Получить расчёт и тест-рендер</h2>
-          <p className="text-gray-300 mt-2">Оставьте контакты — пришлю 3 тестовых кадра и смету. Отвечу в течение дня.</p>
+          <p className="text-gray-300 mt-2">
+            Оставьте контакты — пришлю 3 тестовых кадра и смету. Отвечу в течение дня.
+          </p>
 
           <Card className="mt-6 rounded-2xl">
             <CardContent className="p-6">
@@ -589,43 +601,239 @@ export default function Landing3D() {
 
       {/* FAQ */}
       <section id="faq" className="py-16 bg-neutral-900 border-t scroll-mt-24">
-        <div className="max-w-6xl mx-auto px-4 grid md:grid-cols-2 gap-6">
-          <div>
-            <h2 className="text-3л font-bold text-3xl">FAQ — Вопросы и ответы</h2>
-            <p className="mt-2 text-gray-400">Нажмите на вопрос, чтобы раскрыть ответ.</p>
-          </div>
+        <div className="max-w-6xl mx-auto px-4">
+          <h2 className="text-3xl font-bold">FAQ — Вопросы и ответы</h2>
+          <p className="mt-2 mb-6 text-gray-400">Здесь — практические вещи, которых нет в других блоках.</p>
+
           <div className="space-y-3">
             {[
               {
-                q: "Сколько стоит кадр?",
-                a: "Зависит от сложности и исходников. В среднем на 30–60% ниже рынка. Пришлите планировки — посчитаю за день.",
+                q: "Этапы работы и сроки?",
+                a: "Бриф → оценка → предоплата 30% → черновые ракурсы → финальные материалы/свет → релиз. Малые проекты: 3–5 рабочих дней, средние: 6–10, крупные считаются индивидуально.",
               },
               {
-                q: "Как быстро получу первый результат?",
-                a: "Через 48 часов покажу серый каркас или базовый свет/материалы на ключевых кадрах.",
+                q: "Что нужно для старта?",
+                a: "Планировки/чертежи, краткое ТЗ (материалы, стилистика, ограничения), референсы. Если чего-то нет — помогу собрать.",
+              },
+              { q: "Можно ли подписать NDA?", a: "Да. По умолчанию материалы не публикуются без вашего согласия." },
+              {
+                q: "Сколько правок включено?",
+                a: "Два раунда базовых правок входят в стоимость. Нестандартные изменения (смена брифа, новые ракурсы) — по согласованию.",
               },
               {
-                q: "Какие программы используете?",
-                a: "3ds Max/Blender, Corona/V-Ray/Cycles, Substance, Photoshop. Исходники — по согласованию.",
+                q: "Какие права на изображения после оплаты?",
+                a: "Передаю неисключительные права для маркетинга/презентаций/документации. Исходные 3D-сцены — по отдельной договорённости.",
               },
-              { q: "Правки включены?", a: "Да, 2 раунда базовых правок включены, далее — почасово по прозрачной ставке." },
+              {
+                q: "Форматы и разрешения?",
+                a: "По умолчанию 4K JPG/PNG. По запросу — TIFF, альфа-каналы, другие соотношения сторон, файлы под полиграфию.",
+              },
+              {
+                q: "Как рассчитывается стоимость?",
+                a: "Влияют метраж, детализация, сроки, число ракурсов. После брифа фиксирую цену в смете; доп. задачи — отдельной строкой.",
+              },
+              {
+                q: "Оплата и предоплата?",
+                a: "Безнал/карта/СБП. Предоплата 30%, остаток — после утверждения финальных кадров (до выдачи исходников).",
+              },
             ].map((item, idx) => (
-              <AccordionItem key={idx} q={item.q} a={item.a} />
+              <QA key={idx} q={item.q} a={item.a} />
             ))}
           </div>
         </div>
       </section>
 
-      {/* Footer */}
+      {/* FOOTER */}
       <footer className="py-10 text-center text-sm text-gray-400">
         <div className="max-w-6xl mx-auto px-4">
           © {new Date().getFullYear()} blenderast — 3D архитектурная визуализация.{" "}
-          <a className="underline" href="#brief">
-            Связаться
-          </a>
+          <a className="underline" href="#brief">Связаться</a>
           <div className="mt-2">Политика конфиденциальности · Договор оферты</div>
         </div>
       </footer>
     </div>
   );
+}
+
+/* =========================================================
+   КОМПОНЕНТ ПРАЙС-КОНФИГУРАТОР
+   ========================================================= */
+
+function PricingConfigurator() {
+  const [qtyAngle, setQtyAngle] = useState(0);
+  const [opt, setOpt] = useState({
+    extraTimeOfDay: false,
+    extraSeason: false,
+    extraWeather: false,
+  });
+
+  // Пересчёт суммы
+  const total =
+    BASE_PRODUCT.price +
+    qtyAngle * getAddon("extraAngle").price +
+    (opt.extraTimeOfDay ? getAddon("extraTimeOfDay").price : 0) +
+    (opt.extraSeason ? getAddon("extraSeason").price : 0) +
+    (opt.extraWeather ? getAddon("extraWeather").price : 0);
+
+  function getAddon(k) {
+    return ADDONS.find((a) => a.key === k) || { price: 0 };
+  }
+
+  return (
+    <div className="grid lg:grid-cols-3 gap-6">
+      {/* Карточка базового продукта */}
+      <Card className="rounded-2xl border-neutral-800 ring-1 ring-neutral-800 lg:col-span-1">
+        <CardHeader>
+          <CardTitle className="text-xl">
+            {BASE_PRODUCT.title}
+          </CardTitle>
+          <p className="text-sm text-gray-400">{BASE_PRODUCT.description}</p>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <div className="flex items-center gap-2 text-emerald-400">
+            <Check className="h-4 w-4" />
+            <span>Фотореализм: высокий</span>
+          </div>
+          <div className="flex items-center gap-2 text-emerald-400">
+            <Check className="h-4 w-4" />
+            <span>Первые превью — 48 часов</span>
+          </div>
+          <div className="flex items-center gap-2 text-emerald-400">
+            <Check className="h-4 w-4" />
+            <span>До 3 ракурсов в 4K включено</span>
+          </div>
+
+          <div className="mt-4 text-4xl font-bold">
+            {formatRub(BASE_PRODUCT.price)}
+          </div>
+          <div className="text-xs text-gray-500">Базовый пакет</div>
+        </CardContent>
+      </Card>
+
+      {/* Карточка доп. услуг */}
+      <Card className="rounded-2xl border-neutral-800 lg:col-span-1">
+        <CardHeader>
+          <CardTitle className="text-xl">Детали заказа и доп. услуги</CardTitle>
+          <p className="text-sm text-gray-400">
+            Добавьте опции — сумма пересчитается автоматически.
+          </p>
+        </CardHeader>
+        <CardContent className="space-y-5">
+          {/* Дополнительный ракурс (с количеством) */}
+          <div className="flex items-center justify-between gap-4">
+            <div>
+              <div className="font-medium">Дополнительный ракурс</div>
+              <div className="text-xs text-gray-400">+ {formatRub(getAddon("extraAngle").price)} за ракурс</div>
+            </div>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setQtyAngle(Math.max(0, qtyAngle - 1))}
+                className="px-3 py-1 rounded-lg border border-neutral-700 hover:bg-neutral-900"
+                aria-label="Минус ракурс"
+              >
+                −
+              </button>
+              <div className="w-10 text-center">{qtyAngle}</div>
+              <button
+                onClick={() => setQtyAngle(qtyAngle + 1)}
+                className="px-3 py-1 rounded-lg border border-neutral-700 hover:bg-neutral-900"
+                aria-label="Плюс ракурс"
+              >
+                +
+              </button>
+            </div>
+          </div>
+
+          {/* Тумблеры опций */}
+          {[
+            { k: "extraTimeOfDay", label: "Доп. вариант: другое время суток" },
+            { k: "extraSeason", label: "Доп. вариант: другое время года" },
+            { k: "extraWeather", label: "Доп. вариант: другая погода" },
+          ].map((o) => (
+            <label
+              key={o.k}
+              className="flex items-center justify-between gap-4 cursor-pointer"
+            >
+              <div>
+                <div className="font-medium">{o.label}</div>
+                <div className="text-xs text-gray-400">
+                  + {formatRub(getAddon(o.k).price)}
+                </div>
+              </div>
+              <input
+                type="checkbox"
+                className="h-5 w-5 accent-emerald-500"
+                checked={opt[o.k]}
+                onChange={(e) => setOpt({ ...opt, [o.k]: e.target.checked })}
+              />
+            </label>
+          ))}
+        </CardContent>
+      </Card>
+
+      {/* Итого + CTA */}
+      <Card className="rounded-2xl border-neutral-800 lg:col-span-1">
+        <CardHeader>
+          <CardTitle className="text-xl">Итог</CardTitle>
+          <p className="text-sm text-gray-400">
+            Смета ориентировочная — финализируем после брифа.
+          </p>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <div className="text-5xl font-extrabold bg-gradient-to-r from-emerald-400 to-cyan-300 bg-clip-text text-transparent">
+            {formatRub(total)}
+          </div>
+          <ul className="text-sm text-gray-300 space-y-2">
+            <li className="flex items-start gap-2">
+              <Check className="h-4 w-4 text-emerald-400" />
+              <span>База: {formatRub(BASE_PRODUCT.price)}</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <Check className="h-4 w-4 text-emerald-400" />
+              <span>Доп. ракурсы: {qtyAngle} × {formatRub(getAddon("extraAngle").price)}</span>
+            </li>
+            {opt.extraTimeOfDay && (
+              <li className="flex items-start gap-2">
+                <Check className="h-4 w-4 text-emerald-400" />
+                <span>Другое время суток: {formatRub(getAddon("extraTimeOfDay").price)}</span>
+              </li>
+            )}
+            {opt.extraSeason && (
+              <li className="flex items-start gap-2">
+                <Check className="h-4 w-4 text-emerald-400" />
+                <span>Другое время года: {formatRub(getAddon("extraSeason").price)}</span>
+              </li>
+            )}
+            {opt.extraWeather && (
+              <li className="flex items-start gap-2">
+                <Check className="h-4 w-4 text-emerald-400" />
+                <span>Другая погода: {formatRub(getAddon("extraWeather").price)}</span>
+              </li>
+            )}
+          </ul>
+
+          <a href="#brief">
+            <Button className="w-full rounded-2xl bg-emerald-500 text-neutral-900">
+              Зафиксировать смету и получить бриф
+            </Button>
+          </a>
+          <p className="text-xs text-gray-500">
+            Нажимая, вы перейдёте к форме — укажите контакты и приложите планировки/референсы.
+          </p>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
+
+/* =========================================================
+   УТИЛИТЫ
+   ========================================================= */
+
+function formatRub(n) {
+  return new Intl.NumberFormat("ru-RU", {
+    style: "currency",
+    currency: "RUB",
+    maximumFractionDigits: 0,
+  }).format(n);
 }
