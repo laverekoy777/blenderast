@@ -78,7 +78,7 @@ const ADDONS = [
 
 const Feature = ({ icon: Icon, title, text }) => (
   <div className="flex gap-4">
-    <div className="h-12 w-12 rounded-2xl bg-neutral-800 flex items-center justify-center">
+    <div className="shrink-0 h-10 w-10 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center">
       <Icon className="h-6 w-6 text-emerald-400" />
     </div>
     <div>
