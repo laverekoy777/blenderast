@@ -412,9 +412,8 @@ export default function Landing3D() {
         whileHover={{ rotate: 0 }}
         transition={{ type: "spring", stiffness: 70 }}
       >
-        {/* Положи файл в /public/hero-3d.jpg или подставь свой URL */}
         <motion.img
-          src="/hero-3d.jpg"
+          src="/file/hero-3d.jpg"
           alt="Рабочая сцена 3D-визуализации"
           className="block w-full h-[360px] md:h-[460px] object-cover"
           initial={{ scale: 1.02, opacity: 0 }}
