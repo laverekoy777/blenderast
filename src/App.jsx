@@ -586,9 +586,11 @@ export default function Landing3D() {
 
        {/* BRIEF FORM */}
       <section id="brief" className="py-16 scroll-mt-24">
-        <div className="max-w-3xl mx_auto px-4">
+        <div className="max-w-3xl mx-auto px-4">
           <h2 className="text-3xl font-bold">Получить расчёт и тест-рендер</h2>
-          <p className="text-gray-300 mt-2">Оставьте контакты — пришлю 3 тестовых кадра и смету. Отвечу в течение дня.</p>
+          <p className="text-gray-300 mt-2">
+            Оставьте контакты — пришлю 3 тестовых кадра и смету. Отвечу в течение дня.
+          </p>
 
           <Card className="mt-6 rounded-2xl">
             <CardContent className="p-6">
@@ -624,7 +626,6 @@ export default function Landing3D() {
           </Card>
         </div>
       </section>
-
       {/* FAQ */}
       <section id="faq" className="py-16 bg-neutral-900 border-t scroll-mt-24">
         <div className="max-w-6xl mx-auto px-4">
