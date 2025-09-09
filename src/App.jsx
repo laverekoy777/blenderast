@@ -388,7 +388,7 @@ export default function Landing3D() {
       </section>
 
       {/* Why */}
-      <section id="why" className="py-14 bg-neutral-900 border-y">
+      <section id="why" className="py-14 bg-neutral-900 border-y scroll-mt-24">
         <motion.div
           className="max-w-6xl mx-auto px-4 grid md:grid-cols-3 gap-8"
           initial="hidden"
