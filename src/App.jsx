@@ -156,7 +156,7 @@ export default function Landing3D() {
           <nav className="hidden md:flex items-center gap-6 text-sm">
             <a href="#work" className="hover:opacity-70">Портфолио</a>
             <a href="#why" className="hover:opacity-70">Почему мы</a>
-            <a href="#faq" className="hover:opacity-70">Q&A</a>
+            <a href="#faq" className="hover:opacity-70">FAQ</a>
             <a href="#brief" className="hover:opacity-70">Получить расчёт</a>
           </nav>
           <a href="#brief"><Button className="rounded-2xl">Расчёт проекта</Button></a>
