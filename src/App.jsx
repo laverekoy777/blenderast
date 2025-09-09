@@ -1,5 +1,5 @@
-import React from "react";
-import { motion } from "framer-motion";
+import React, { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -7,12 +7,18 @@ import { Textarea } from "@/components/ui/textarea";
 import { Check, MoveRight, Star, Shield, Zap, Camera, Building2, Cpu, Sparkles } from "lucide-react";
 
 // NOTE: Replace placeholder images with your renders. 1920x1080 recommended.
-const gallery = [
-  { src: "https://cdn-edge.kwork.ru/files/portfolio/t0/05/8958db0c58e0ea85151b13214e4539ea6463d0f4-1753879705.webp", alt: "Exterior render — blenderast" },
-  { src: "https://cdn-edge.kwork.ru/files/portfolio/t0/09/3037b1d49d420aa3e9cccd4041e5f6041fb6ef7f-1753879709.webp", alt: "Interior render — blenderast" },
-  { src: "https://cdn-edge.kwork.ru/files/portfolio/t0/10/73c93bc766488b868e0d166fed66dd6260898aa6-1753879710.webp", alt: "Kitchen render — blenderast" },
-  { src: "https://cdn-edge.kwork.ru/files/portfolio/t0/05/8958db0c58e0ea85151b13214e4539ea6463d0f4-1753879705.webp", alt: "Exterior render — blenderast" },
+// Портфолио с категориями
+const portfolio = [
+  { src: "https://cdn-edge.kwork.ru/files/portfolio/t0/05/8958db0c58e0ea85151b13214e4539ea6463d0f4-1753879705.webp", alt: "Экстерьер — villa dusk", cat: "Экстерьеры" },
+  { src: "https://cdn-edge.kwork.ru/files/portfolio/t0/09/3037b1d49d420aa3e9cccd4041e5f6041fb6ef7f-1753879709.webp", alt: "Интерьер — living room", cat: "Интерьеры" },
+  { src: "https://cdn-edge.kwork.ru/files/portfolio/t0/10/73c93bc766488b868e0d166fed66dd6260898aa6-1753879710.webp", alt: "Коммерческая — lobby", cat: "Коммерческие" },
+  { src: "https://cdn-edge.kwork.ru/files/portfolio/t0/05/8958db0c58e0ea85151b13214e4539ea6463d0f4-1753879705.webp", alt: "Мастер-план — квартал", cat: "Мастер-план" },
+  // дубли для сетки
+  { src: "https://cdn-edge.kwork.ru/files/portfolio/t0/09/3037b1d49d420aa3e9cccd4041e5f6041fb6ef7f-1753879709.webp", alt: "Интерьер — kitchen", cat: "Интерьеры" },
+  { src: "https://cdn-edge.kwork.ru/files/portfolio/t0/10/73c93bc766488b868e0d166fed66dd6260898aa6-1753879710.webp", alt: "Коммерческая — hall", cat: "Коммерческие" },
+  { src: "https://cdn-edge.kwork.ru/files/portfolio/t0/05/8958db0c58e0ea85151b13214e4539ea6463d0f4-1753879705.webp", alt: "Экстерьер — facade", cat: "Экстерьеры" },
 ];
+const categories = ["Все", "Экстерьеры", "Интерьеры", "Коммерческие", "Мастер-план"];
 
 const Feature = ({ icon: Icon, title, text }) => (
   <div className="flex gap-4">
@@ -42,8 +48,78 @@ const FAQItem = ({ q, a }) => (
   </Card>
 );
 
+function PortfolioTabs() {
+  const [active, setActive] = useState("Все");
+  const [lightbox, setLightbox] = useState(null);
+  const items = active === "Все" ? portfolio : portfolio.filter((i) => i.cat === active);
+
+  return (
+    <div>
+      <div className="flex flex-wrap gap-2 mb-6">
+        {categories.map((c) => (
+          <button
+            key={c}
+            onClick={() => setActive(c)}
+            className={`px-4 py-2 rounded-full text-sm border transition ${
+              active === c ? "bg-white text-neutral-900" : "border-neutral-700 hover:bg-neutral-900"
+            }`}
+          >
+            {c}
+          </button>
+        ))}
+      </div>
+
+      <motion.div layout className="grid md:grid-cols-3 gap-6">
+        <AnimatePresence>
+          {items.map((g, i) => (
+            <motion.div
+              key={`${g.src}-${i}-${active}`}
+              layout
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.3 }}
+              className="overflow-hidden rounded-2xl border border-neutral-800 cursor-pointer"
+              onClick={() => setLightbox({ src: g.src, alt: g.alt })}
+            >
+              <img src={g.src} alt={g.alt} className="h-48 w-full object-cover" />
+              <div className="p-4 flex items-center justify-between">
+                <div className="text-sm text-gray-300 flex items-center gap-2"><Building2 className="h-4 w-4"/>{g.alt}</div>
+                <span className="text-xs text-gray-500">{g.cat}</span>
+              </div>
+            </motion.div>
+          ))}
+        </AnimatePresence>
+      </motion.div>
+
+      {/* LIGHTBOX */}
+      <AnimatePresence>
+        {lightbox && (
+          <motion.div
+            className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-6"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setLightbox(null)}
+          >
+            <motion.img
+              src={lightbox.src}
+              alt={lightbox.alt}
+              className="max-h-[85vh] max-w-[90vw] rounded-2xl"
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
 export default function Landing3D() {
   return (
+    
     <div className="min-h-screen bg-neutral-950 text-gray-100">
       {/* Nav */}
       <header className="sticky top-0 z-40 bg-neutral-950/80 backdrop-blur border-b border-neutral-800">
@@ -67,7 +143,7 @@ export default function Landing3D() {
         <div className="max-w-6xl mx-auto px-4 py-16 grid md:grid-cols-2 gap-10 items-center">
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }}>
             <h1 className="text-4xl md:text-5xl font-bold leading-tight">
-              Фотореалистичная 3D‑визуализация <span className="whitespace-nowrap">без переплаты</span>
+              Фотореалистичная 3D-визуализация <span className="whitespace-nowrap">без переплаты</span>
             </h1>
             <p className="mt-4 text-gray-300 text-lg">
               Реализм выше рынка, стоимость ниже конкурентов. В среднем экономим заказчикам до 30–40% бюджета без потери качества.
@@ -83,10 +159,25 @@ export default function Landing3D() {
             </div>
           </motion.div>
 
-          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6, delay: 0.1 }} className="grid grid-cols-2 gap-3">
-            {gallery.map((g, i) => (
-              <img key={i} src={g.src} alt={g.alt} className="rounded-2xl shadow-sm object-cover h-40 md:h-56 w-full"/>
-            ))}
+          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ duration: 0.8 }} className="relative">
+            <motion.div
+              initial={{ rotate: -6, y: 20 }}
+              whileInView={{ rotate: 0, y: 0 }}
+              transition={{ type: "spring", stiffness: 70 }}
+              className="grid grid-cols-2 gap-3"
+            >
+              {portfolio.slice(0,4).map((g, i) => (
+                <motion.img key={i} src={g.src} alt={g.alt} className="rounded-2xl shadow-sm object-cover h-40 md:h-56 w-full"
+                  whileHover={{ scale: 1.03 }} />
+              ))}
+            </motion.div>
+            <motion.div
+              className="pointer-events-none absolute inset-0 rounded-[40px]"
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              transition={{ duration: 1.2, delay: 0.2 }}
+              style={{ boxShadow: "inset 0 0 120px rgba(255,255,255,0.06)" }}
+            />
           </motion.div>
         </div>
       </section>
@@ -105,18 +196,11 @@ export default function Landing3D() {
         <div className="max-w-6xl mx-auto px-4">
           <div className="flex items-end justify-between gap-4 mb-6">
             <h2 className="text-3xl font-bold">Портфолио</h2>
-            <p className="text-sm text-gray-400">Ещё кейсы по запросу: экстеръеры, интерьеры, коммерческая недвижимость.</p>
+            <p className="text-sm text-gray-400">Выберите категорию: экстерьеры, интерьеры, коммерческие, мастер‑план.</p>
           </div>
-          <div className="grid md:grid-cols-3 gap-6">
-            {gallery.concat(gallery).slice(0,6).map((g, i) => (
-              <Card key={i} className="overflow-hidden rounded-2xl">
-                <img src={g.src} alt={g.alt} className="h-48 w-full object-cover" />
-                <CardContent className="p-4">
-                  <div className="flex items-center gap-2 text-sm text-gray-300"><Building2 className="h-4 w-4"/>ЖК «Скайлайн» — экстерьер</div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+
+          {/* Tabs */}
+          <PortfolioTabs />
         </div>
       </section>
 
@@ -185,9 +269,12 @@ export default function Landing3D() {
 
           <Card className="mt-6 rounded-2xl">
             <CardContent className="p-6">
-              <form method="POST" action="#" onSubmit={(e)=>{ e.preventDefault(); alert('Спасибо! Мы свяжемся с вами.'); }} className="grid md:grid-cols-2 gap-4">
+              <form method="POST" action="https://formspree.io/f/XXXXYYYY" className="grid md:grid-cols-2 gap-4">
                 {/* Honeypot */}
                 <input type="text" name="website" className="hidden" tabIndex={-1} autoComplete="off" />
+                {/* Formspree meta */}
+                <input type="hidden" name="_subject" value="Новый лид: blenderast — расчёт + тест-рендер" />
+                <input type="hidden" name="_redirect" value="https://YOUR-DOMAIN/thank-you" />
                 <Input required name="name" placeholder="Имя" />
                 <Input required type="email" name="email" placeholder="E‑mail" />
                 <Input name="phone" placeholder="Телефон / WhatsApp" />
