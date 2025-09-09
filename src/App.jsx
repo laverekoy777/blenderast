@@ -584,7 +584,7 @@ export default function Landing3D() {
         </div>
       </section>
 
-      {/* BRIEF FORM */}
+       {/* BRIEF FORM */}
       <section id="brief" className="py-16 scroll-mt-24">
         <div className="max-w-3xl mx_auto px-4">
           <h2 className="text-3xl font-bold">Получить расчёт и тест-рендер</h2>
