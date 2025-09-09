@@ -933,7 +933,7 @@ function PricingConfigurator({ onChange }) {
           </ul>
 
           <a href="#brief">
-            <Button className="w-full rounded-2xl bg-emerald-500 text-neutral-900">
+            <Button className="w-full rounded-2xl bg-emerald-500 text-neutral-900 mt-2">
               Зафиксировать смету и получить бриф
             </Button>
           </a>
