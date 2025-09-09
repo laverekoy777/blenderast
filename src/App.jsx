@@ -412,7 +412,7 @@ export default function Landing3D() {
       </section>
 
       {/* Work */}
-      <section id="work" className="py-16">
+      <section id="work" className="py-16 scroll-mt-24">
         <div className="max-w-6xl mx-auto px-4">
           <div className="flex items-end justify-between gap-4 mb-6">
             <h2 className="text-3xl font-bold">Портфолио</h2>
@@ -513,7 +513,7 @@ export default function Landing3D() {
       </section>
 
       {/* About */}
-      <section id="about" className="py-16">
+      <section id="about" className="py-16 scroll-mt-24">
         <div className="max-w-6xl mx-auto px-4 grid md:grid-cols-2 gap-10 items-start">
           <div>
             <h2 className="text-3xl font-bold mb-4">Обо мне</h2>
@@ -547,7 +547,7 @@ export default function Landing3D() {
       </section>
 
       {/* Brief form */}
-      <section id="brief" className="py-16">
+      <section id="brief" className="py-16 scroll-mt-24">
         <div className="max-w-3xl mx-auto px-4">
           <h2 className="text-3xl font-bold">Получить расчёт и тест-рендер</h2>
           <p className="text-gray-300 mt-2">Оставьте контакты — пришлю 3 тестовых кадра и смету. Отвечу в течение дня.</p>
@@ -588,7 +588,7 @@ export default function Landing3D() {
       </section>
 
       {/* FAQ */}
-      <section id="faq" className="py-16 bg-neutral-900 border-t">
+      <section id="faq" className="py-16 bg-neutral-900 border-t scroll-mt-24">
         <div className="max-w-6xl mx-auto px-4 grid md:grid-cols-2 gap-6">
           <div>
             <h2 className="text-3л font-bold text-3xl">FAQ — Вопросы и ответы</h2>
