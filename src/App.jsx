@@ -24,7 +24,7 @@ const Feature = ({ icon: Icon, title, text }) => (
   <div className="flex gap-4">
     <div className="h-12 w-12 rounded-2xl bg-neutral-800 flex items-center justify-center"><Icon className="h-6 w-6" /></div>
     <div>
-      <h4 className="font-semibold text-gray-900">{title}</h4>
+      <h4 className="font-semibold text-gray-100">{title}</h4>
       <p className="text-gray-300 text-sm leading-relaxed">{text}</p>
     </div>
   </div>
@@ -117,10 +117,35 @@ function PortfolioTabs() {
   );
 }
 
+// Анимационные пресеты для плавного появления секций и элементов
+const sectionReveal = {
+  hidden: { opacity: 0, y: 24 },
+  show: (i = 0) => ({ opacity: 1, y: 0, transition: { duration: 0.6, delay: i * 0.08 } }),
+};
+
+function BackgroundFX() {
+  return (
+    <div aria-hidden className="pointer-events-none fixed inset-0 -z-10">
+      {/* мягкая сетка */}
+      <div className="absolute inset-0 opacity-[0.04]"
+           style={{
+             backgroundImage:
+               "linear-gradient(to right, rgba(255,255,255,.6) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,.6) 1px, transparent 1px)",
+             backgroundSize: "36px 36px",
+           }}
+      />
+      {/* радиальный свет */}
+      <div className="absolute -top-40 left-1/2 -translate-x-1/2 h-[520px] w-[720px] rounded-full blur-3xl opacity-20"
+           style={{ background: "radial-gradient(600px 300px at center, rgba(56,189,248,.6), transparent 60%)" }} />
+    </div>
+  );
+}
+
 export default function Landing3D() {
   return (
     
     <div className="min-h-screen bg-neutral-950 text-gray-100">
+      <BackgroundFX />
       {/* Nav */}
       <header className="sticky top-0 z-40 bg-neutral-950/80 backdrop-blur border-b border-neutral-800">
         <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
@@ -143,7 +168,7 @@ export default function Landing3D() {
         <div className="max-w-6xl mx-auto px-4 py-16 grid md:grid-cols-2 gap-10 items-center">
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }}>
             <h1 className="text-4xl md:text-5xl font-bold leading-tight">
-              Фотореалистичная 3D-визуализация <span className="whitespace-nowrap">без переплаты</span>
+              <span className="bg-gradient-to-r from-sky-400 via-cyan-300 to-emerald-300 bg-clip-text text-transparent">Фотореалистичная 3D-визуализация</span> <span className="whitespace-nowrap">без переплаты</span>
             </h1>
             <p className="mt-4 text-gray-300 text-lg">
               Реализм выше рынка, стоимость ниже конкурентов. В среднем экономим заказчикам до 30–40% бюджета без потери качества.
@@ -184,11 +209,12 @@ export default function Landing3D() {
 
       {/* Why */}
       <section id="why" className="py-14 bg-neutral-900 border-y">
-        <div className="max-w-6xl mx-auto px-4 grid md:grid-cols-3 gap-8">
-          <Feature icon={Camera} title="Реализм как в фото" text="PBR‑материалы, HDRI‑свет, физическая камера. Детализация до фурнитуры и микрорельефов." />
-          <Feature icon={Cpu} title="Оптимизированный пайплайн" text="Сценарии автоматизации, ноды и рендер‑ферма → быстрые превью и предсказуемые сроки." />
-          <Feature icon={Shield} title="Прозрачные сроки и цена" text="Фикс по брифу. Отдаём исходники/кадры в срок, без доплат за базовые правки." />
-        </div>
+        <motion.div className="max-w-6xl mx-auto px-4 grid md:grid-cols-3 gap-8"
+          initial="hidden" whileInView="show" viewport={{ once: true, margin: "-80px" }}>
+          <motion.div variants={sectionReveal} custom={0}><Feature icon={Camera} title="Реализм как в фото" text="PBR-материалы, HDRI-свет, физическая камера. Детализация до фурнитуры и микрорельефов." /></motion.div>
+          <motion.div variants={sectionReveal} custom={1}><Feature icon={Cpu} title="Оптимизированный пайплайн" text="Сценарии автоматизации, ноды и рендер-ферма → быстрые превью и предсказуемые сроки." /></motion.div>
+          <motion.div variants={sectionReveal} custom={2}><Feature icon={Shield} title="Прозрачные сроки и цена" text="Фикс по брифу. Отдаём исходники/кадры в срок, без доплат за базовые правки." /></motion.div>
+        </motion.div>
       </section>
 
       {/* Work */}
@@ -206,26 +232,33 @@ export default function Landing3D() {
 
       {/* Social proof */}
       <section className="py-12 bg-neutral-950">
-        <div className="max-w-6xl mx-auto px-4 grid md:grid-cols-3 gap-6">
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center gap-2 text-amber-500"><Star className="h-5 w-5"/><span className="font-semibold">98% довольных заказчиков</span></div>
-              <p className="text-sm text-gray-300 mt-2">Средняя оценка по проектам 4.9/5. Подписываем NDA, соблюдаем дедлайны.</p>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center gap-2 text-green-600"><Zap className="h-5 w-5"/><span className="font-semibold">Первый драфт — 48 часов</span></div>
-              <p className="text-sm text-gray-300 mt-2">Чёткий этапинг: бриф → серый каркас → материалы/свет → финал.</p>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center gap-2 text-blue-600"><Shield className="h-5 w-5"/><span className="font-semibold">Гарантия правок</span></div>
-              <p className="text-sm text-gray-300 mt-2">2 раунда базовых правок включены. Дальше — почасово по прайсу.</p>
-            </CardContent>
-          </Card>
-        </div>
+        <motion.div className="max-w-6xl mx-auto px-4 grid md:grid-cols-3 gap-6"
+          initial="hidden" whileInView="show" viewport={{ once: true }}>
+          <motion.div variants={sectionReveal} className="transition-transform hover:-translate-y-1">
+            <Card>
+              <CardContent className="p-6">
+                <div className="flex items-center gap-2 text-amber-500"><Star className="h-5 w-5"/><span className="font-semibold">98% довольных заказчиков</span></div>
+                <p className="text-sm text-gray-300 mt-2">Средняя оценка по проектам 4.9/5. Подписываем NDA, соблюдаем дедлайны.</p>
+              </CardContent>
+            </Card>
+          </motion.div>
+          <motion.div variants={sectionReveal} className="transition-transform hover:-translate-y-1">
+            <Card>
+              <CardContent className="p-6">
+                <div className="flex items-center gap-2 text-green-600"><Zap className="h-5 w-5"/><span className="font-semibold">Первый драфт — 48 часов</span></div>
+                <p className="text-sm text-gray-300 mt-2">Чёткий этапинг: бриф → серый каркас → материалы/свет → финал.</p>
+              </CardContent>
+            </Card>
+          </motion.div>
+          <motion.div variants={sectionReveal} className="transition-transform hover:-translate-y-1">
+            <Card>
+              <CardContent className="p-6">
+                <div className="flex items-center gap-2 text-blue-600"><Shield className="h-5 w-5"/><span className="font-semibold">Гарантия правок</span></div>
+                <p className="text-sm text-gray-300 mt-2">2 раунда базовых правок включены. Дальше — почасово по прайсу.</p>
+              </CardContent>
+            </Card>
+          </motion.div>
+        </motion.div>
       </section>
 
       {/* Pricing teaser */}
