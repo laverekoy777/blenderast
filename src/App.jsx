@@ -723,8 +723,6 @@ export default function Landing3D() {
       <section id="faq" className="py-16 bg-neutral-900 border-t scroll-mt-24">
         <div className="max-w-6xl mx-auto px-4">
           <h2 className="text-3xl font-bold">FAQ — Вопросы и ответы</h2>
-          <p className="mt-2 mb-6 text-gray-400">Здесь — практические вещи, которых нет в других блоках.</p>
-
           <div className="space-y-3">
             {[
               {
