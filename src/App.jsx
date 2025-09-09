@@ -9,7 +9,6 @@ import {
   MoveRight,
   Star,
   Shield,
-  Zap,
   Camera,
   Building2,
   Cpu,
@@ -19,10 +18,6 @@ import {
   Palette,
   Image as ImageIcon,
 } from "lucide-react";
-
-/* =========================================================
-   ДАННЫЕ
-   ========================================================= */
 
 const portfolio = [
   {
@@ -58,11 +53,10 @@ const portfolio = [
 
 const categories = ["Все", "Экстерьеры", "Интерьеры", "Коммерческие", "Мастер-план"];
 
-// Прайс: базовый продукт + допы
 const BASE_PRODUCT = {
   title: "Продающая фотореалистичная 3D-визуализация экстерьера вашего проекта",
   description: "Включено: 3D-моделирование проекта + визуализация до 3 ракурсов в 4K.",
-  price: 10000, // ₽
+  price: 10000,
 };
 
 const ADDONS = [
@@ -71,10 +65,6 @@ const ADDONS = [
   { key: "extraSeason", label: "Доп. вариант: другое время года", price: 1500 },
   { key: "extraWeather", label: "Доп. вариант: другая погода", price: 1500 },
 ];
-
-/* =========================================================
-   МЕЛКИЕ КОМПОНЕНТЫ
-   ========================================================= */
 
 const Feature = ({ icon: Icon, title, text }) => (
   <div className="flex gap-4">
@@ -115,20 +105,14 @@ function QA({ q, a }) {
   );
 }
 
-/* =========================================================
-   ПОРТФОЛИО
-   ========================================================= */
-
 function PortfolioTabs() {
   const [active, setActive] = useState("Все");
-  const [lightbox, setLightbox] = useState(null); // { images:[], index:0, title:"" }
+  const [lightbox, setLightbox] = useState(null);
   const items = active === "Все" ? portfolio : portfolio.filter((i) => i.cat === active);
 
   const close = () => setLightbox(null);
-  const next = () =>
-    setLightbox((lb) => lb && { ...lb, index: (lb.index + 1) % lb.images.length });
-  const prev = () =>
-    setLightbox((lb) => lb && { ...lb, index: (lb.index - 1 + lb.images.length) % lb.images.length });
+  const next = () => setLightbox((lb) => lb && { ...lb, index: (lb.index + 1) % lb.images.length });
+  const prev = () => setLightbox((lb) => lb && { ...lb, index: (lb.index - 1 + lb.images.length) % lb.images.length });
 
   useEffect(() => {
     if (!lightbox) return;
@@ -275,10 +259,6 @@ function PortfolioTabs() {
   );
 }
 
-/* =========================================================
-   АНИМАЦИИ/ФОН
-   ========================================================= */
-
 const sectionReveal = {
   hidden: { opacity: 0, y: 24 },
   show: (i = 0) => ({ opacity: 1, y: 0, transition: { duration: 0.6, delay: i * 0.08 } }),
@@ -303,10 +283,6 @@ function BackgroundFX() {
   );
 }
 
-/* =========================================================
-   СТРАНИЦА
-   ========================================================= */
-
 export default function Landing3D() {
   const [quote, setQuote] = useState({
     total: BASE_PRODUCT.price,
@@ -327,7 +303,6 @@ export default function Landing3D() {
     <div className="min-h-screen bg-neutral-950 text-gray-100">
       <BackgroundFX />
 
-      {/* NAV */}
       <header className="sticky top-0 z-40 bg-neutral-950/80 backdrop-blur border-b border-neutral-800">
         <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-2">
@@ -348,110 +323,95 @@ export default function Landing3D() {
         </div>
       </header>
 
-      {/* Hero */}
-<section className="relative overflow-hidden">
-  <div className="max-w-6xl mx-auto px-4 py-16 grid md:grid-cols-2 gap-10 items-center">
-
-    {/* Левый столбец — оффер */}
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.6 }}
-    >
-      <h1 className="text-4xl md:text-5xl font-bold leading-tight">
-        <span className="bg-gradient-to-r from-sky-400 via-cyan-300 to-emerald-300 bg-clip-text text-transparent">
-          Фотореалистичная 3D-визуализация
-        </span>{" "}
-        без переплаты
-      </h1>
-      <p className="mt-4 text-gray-300 text-lg">
-        Реализм выше рынка, стоимость ниже конкурентов. В среднем экономия 30–40% без потери качества.
-      </p>
-
-      <div className="mt-6 flex gap-3">
-        <a href="#work">
-          <Button className="rounded-2xl bg-emerald-500 text-neutral-900">Смотреть работы</Button>
-        </a>
-        <a href="#brief">
-          <Button
-            variant="outline"
-            className="rounded-2xl border-emerald-500 text-emerald-400 hover:bg-emerald-900/40"
+      <section className="relative overflow-hidden">
+        <div className="max-w-6xl mx-auto px-4 py-16 grid md:grid-cols-2 gap-10 items-center">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
           >
-            Получить 3 тест-кадра <MoveRight className="inline h-4 w-4 ml-1" />
-          </Button>
-        </a>
-      </div>
+            <h1 className="text-4xl md:text-5xl font-bold leading-tight">
+              <span className="bg-gradient-to-r from-sky-400 via-cyan-300 to-emerald-300 bg-clip-text text-transparent">
+                Фотореалистичная 3D-визуализация
+              </span>{" "}
+              без переплаты
+            </h1>
+            <p className="mt-4 text-gray-300 text-lg">
+              Реализм выше рынка, стоимость ниже конкурентов. В среднем экономия 30–40% без потери качества.
+            </p>
+            <div className="mt-6 flex gap-3">
+              <a href="#work">
+                <Button className="rounded-2xl bg-emerald-500 text-neutral-900">Смотреть работы</Button>
+              </a>
+              <a href="#brief">
+                <Button
+                  variant="outline"
+                  className="rounded-2xl border-emerald-500 text-emerald-400 hover:bg-emerald-900/40"
+                >
+                  Получить 3 тест-кадра <MoveRight className="inline h-4 w-4 ml-1" />
+                </Button>
+              </a>
+            </div>
+            <div className="mt-8 grid grid-cols-3 md:w-3/4">
+              <Stat value="10+" label="лет опыта" />
+              <Stat value="> 200" label="проектов" />
+              <Stat value="48ч" label="первые превью" />
+            </div>
+          </motion.div>
 
-      <div className="mt-8 grid grid-cols-3 md:w-3/4">
-        <Stat value="10+" label="лет опыта" />
-        <Stat value="> 200" label="проектов" />
-        <Stat value="48ч" label="первые превью" />
-      </div>
-    </motion.div>
+          <motion.div
+            className="relative group"
+            initial={{ opacity: 0, scale: 0.98, y: 20 }}
+            whileInView={{ opacity: 1, scale: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            whileHover={{ y: -6 }}
+          >
+            <div
+              className="absolute -inset-6 rounded-[28px] blur-3xl opacity-30 group-hover:opacity-60 transition-opacity"
+              style={{ background: "radial-gradient(600px 240px at 60% 40%, rgba(16,185,129,.35), transparent 60%)" }}
+            />
+            <motion.div
+              className="relative rounded-2xl overflow-hidden border border-neutral-800 bg-neutral-900/40"
+              initial={{ rotate: -0.6 }}
+              whileHover={{ rotate: 0 }}
+              transition={{ type: "spring", stiffness: 70 }}
+            >
+              <motion.img
+                src="/hero-3d.jpg"
+                alt="Рабочая сцена 3D-визуализации"
+                className="block w-full h-[360px] md:h-[460px] object-cover"
+                initial={{ scale: 1.02, opacity: 0 }}
+                whileInView={{ scale: 1.0, opacity: 1 }}
+                whileHover={{ scale: 1.05 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6 }}
+              />
+              <motion.div
+                className="pointer-events-none absolute inset-0"
+                initial={{ opacity: 0 }}
+                whileHover={{ opacity: 1 }}
+                transition={{ duration: 0.5 }}
+                style={{
+                  background:
+                    "linear-gradient(120deg, transparent 20%, rgba(255,255,255,.08) 35%, transparent 55%)",
+                }}
+              />
+              <div className="absolute inset-0 rounded-2xl ring-1 ring-transparent group-hover:ring-emerald-500/50 transition-all" />
+            </motion.div>
+            <motion.div
+              className="absolute -bottom-4 left-6 right-auto px-3 py-1.5 rounded-full text-xs bg-black/60 border border-neutral-800"
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+            >
+              Рабочая сцена • Blender / HDRI / PBR
+            </motion.div>
+          </motion.div>
+        </div>
+      </section>
 
-    {/* Правый столбец — одно фото с красивой анимацией */}
-    <motion.div
-      className="relative group"
-      initial={{ opacity: 0, scale: 0.98, y: 20 }}
-      whileInView={{ opacity: 1, scale: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.8, ease: "easeOut" }}
-      whileHover={{ y: -6 }}
-    >
-      {/* Глоу-подсветка за кадром */}
-      <div
-        className="absolute -inset-6 rounded-[28px] blur-3xl opacity-30 group-hover:opacity-60 transition-opacity"
-        style={{ background: "radial-gradient(600px 240px at 60% 40%, rgba(16,185,129,.35), transparent 60%)" }}
-      />
-
-      {/* Карточка с изображением */}
-      <motion.div
-        className="relative rounded-2xl overflow-hidden border border-neutral-800 bg-neutral-900/40"
-        initial={{ rotate: -0.6 }}
-        whileHover={{ rotate: 0 }}
-        transition={{ type: "spring", stiffness: 70 }}
-      >
-        <motion.img
-          src="/file/hero-3d.jpg"
-          alt="Рабочая сцена 3D-визуализации"
-          className="block w-full h-[360px] md:h-[460px] object-cover"
-          initial={{ scale: 1.02, opacity: 0 }}
-          whileInView={{ scale: 1.0, opacity: 1 }}
-          whileHover={{ scale: 1.05 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-        />
-
-        {/* Блик при ховере */}
-        <motion.div
-          className="pointer-events-none absolute inset-0"
-          initial={{ opacity: 0 }}
-          whileHover={{ opacity: 1 }}
-          transition={{ duration: 0.5 }}
-          style={{
-            background:
-              "linear-gradient(120deg, transparent 20%, rgba(255,255,255,.08) 35%, transparent 55%)",
-          }}
-        />
-
-        {/* Неоновая рамка при ховере */}
-        <div className="absolute inset-0 rounded-2xl ring-1 ring-transparent group-hover:ring-emerald-500/50 transition-all" />
-      </motion.div>
-
-      {/* Плавающий бейдж */}
-      <motion.div
-        className="absolute -bottom-4 left-6 right-auto px-3 py-1.5 rounded-full text-xs bg-black/60 border border-neutral-800"
-        initial={{ opacity: 0, y: 10 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-      >
-        Рабочая сцена • Blender / HDRI / PBR
-      </motion.div>
-    </motion.div>
-  </div>
-</section>
-      {/* WHY */}
       <section id="why" className="py-14 bg-neutral-900 border-y scroll-mt-24">
         <motion.div
           className="max-w-6xl mx-auto px-4 grid md:grid-cols-3 gap-8"
@@ -483,7 +443,6 @@ export default function Landing3D() {
         </motion.div>
       </section>
 
-      {/* PRICING */}
       <section id="pricing" className="py-16 bg-neutral-950 border-y scroll-mt-24">
         <div className="max-w-6xl mx-auto px-4">
           <div className="flex items-end justify-between gap-4 mb-8">
@@ -494,7 +453,6 @@ export default function Landing3D() {
         </div>
       </section>
 
-      {/* WORK */}
       <section id="work" className="py-16 scroll-mt-24">
         <div className="max-w-6xl mx-auto px-4">
           <div className="flex items-end justify-between gap-4 mb-6">
@@ -505,7 +463,6 @@ export default function Landing3D() {
         </div>
       </section>
 
-      {/* SOCIAL PROOF */}
       <section className="py-12 bg-neutral-950">
         <motion.div
           className="max-w-6xl mx-auto px-4 grid md:grid-cols-3 gap-6"
@@ -549,7 +506,6 @@ export default function Landing3D() {
         </motion.div>
       </section>
 
-      {/* ABOUT (расширённый + чек-лист) */}
       <section id="about" className="py-16 scroll-mt-24">
         <div className="max-w-6xl mx-auto px-4 grid md:grid-cols-2 gap-10 items-start">
           <div>
@@ -571,7 +527,6 @@ export default function Landing3D() {
 
           <div className="bg-neutral-900 border border-neutral-800 rounded-2xl p-6">
             <h3 className="text-xl font-semibold mb-5">Что нужно от вас для старта</h3>
-
             <ol className="space-y-4">
               <li className="flex items-start gap-4">
                 <div className="shrink-0 h-10 w-10 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center">
@@ -621,7 +576,6 @@ export default function Landing3D() {
         </div>
       </section>
 
-      {/* BRIEF FORM (центр + передача из калькулятора + upload) */}
       <section id="brief" className="py-16 scroll-mt-24">
         <div className="max-w-3xl mx-auto px-4">
           <h2 className="text-3xl font-bold">Получить расчёт и тест-рендер</h2>
@@ -635,13 +589,10 @@ export default function Landing3D() {
                 encType="multipart/form-data"
                 className="grid md:grid-cols-2 gap-4"
               >
-                {/* Honeypot */}
                 <input type="text" name="website" className="hidden" tabIndex={-1} autoComplete="off" />
-                {/* Formspree meta */}
                 <input type="hidden" name="_subject" value="Новый лид: blenderast — расчёт + тест-рендер" />
                 <input type="hidden" name="_redirect" value="https://YOUR-DOMAIN/thank-you" />
 
-                {/* Передаём сводку калькулятора */}
                 <input type="hidden" name="quote_total" value={quote?.total ?? ""} />
                 <input type="hidden" name="quote_breakdown" value={JSON.stringify(quote?.breakdown || {})} />
                 <input
@@ -655,11 +606,9 @@ export default function Landing3D() {
                   })}
                 />
 
-                {/* Контакты */}
                 <Input required name="name" placeholder="Имя" />
                 <Input required type="email" name="email" placeholder="E-mail" />
 
-                {/* Проектные данные */}
                 <div className="md:col-span-2 grid md:grid-cols-2 gap-4">
                   <select
                     name="project_type"
@@ -675,11 +624,8 @@ export default function Landing3D() {
 
                 <Input name="deadline" placeholder="Сроки (например: 10–14 дней)" />
                 <Input name="budget" placeholder="Ориентир по бюджету" />
-
-                {/* Кол-во ракурсов — база 3 + допы из калькулятора */}
                 <Input name="angles" placeholder="Количество ракурсов" value={3 + (quote?.qtyAngle || 0)} readOnly />
 
-                {/* Референсы/файлы */}
                 <div className="md:col-span-2">
                   <label className="block text-sm mb-1">Загрузка референсов (изображения/PDF/ZIP до 20MB)</label>
                   <input
@@ -709,7 +655,6 @@ export default function Landing3D() {
                 </div>
               </form>
 
-              {/* Визуальная сводка калькулятора прямо под формой */}
               <div className="mt-6 rounded-xl border border-neutral-800 bg-neutral-900 p-4 text-sm text-gray-300">
                 <div className="flex items-center justify-between">
                   <span>Текущая смета:</span>
@@ -748,7 +693,6 @@ export default function Landing3D() {
         </div>
       </section>
 
-      {/* FAQ */}
       <section id="faq" className="py-16 bg-neutral-900 border-t scroll-mt-24">
         <div className="max-w-6xl mx-auto px-4">
           <h2 className="text-3xl font-bold">FAQ — Вопросы и ответы</h2>
@@ -790,7 +734,6 @@ export default function Landing3D() {
         </div>
       </section>
 
-      {/* FOOTER */}
       <footer className="py-10 text-center text-sm text-gray-400">
         <div className="max-w-6xl mx-auto px-4">
           © {new Date().getFullYear()} blenderast — 3D архитектурная визуализация.{" "}
@@ -801,10 +744,6 @@ export default function Landing3D() {
     </div>
   );
 }
-
-/* =========================================================
-   ПРАЙС-КОНФИГУРАТОР
-   ========================================================= */
 
 function PricingConfigurator({ onChange }) {
   const [qtyAngle, setQtyAngle] = useState(0);
@@ -838,7 +777,6 @@ function PricingConfigurator({ onChange }) {
 
   return (
     <div className="grid lg:grid-cols-3 gap-6">
-      {/* База */}
       <Card className="rounded-2xl border-neutral-800 ring-1 ring-neutral-800 lg:col-span-1">
         <CardHeader>
           <CardTitle className="text-xl">{BASE_PRODUCT.title}</CardTitle>
@@ -863,14 +801,12 @@ function PricingConfigurator({ onChange }) {
         </CardContent>
       </Card>
 
-      {/* Доп. услуги */}
       <Card className="rounded-2xl border-neutral-800 lg:col-span-1">
         <CardHeader>
           <CardTitle className="text-xl">Детали заказа и доп. услуги</CardTitle>
           <p className="text-sm text-gray-400">Добавьте опции — сумма пересчитается автоматически.</p>
         </CardHeader>
         <CardContent className="space-y-5">
-          {/* Доп. ракурс с количеством */}
           <div className="flex items-center justify-between gap-4">
             <div>
               <div className="font-medium">Дополнительный ракурс</div>
@@ -895,7 +831,6 @@ function PricingConfigurator({ onChange }) {
             </div>
           </div>
 
-          {/* Тумблеры */}
           {[
             { k: "extraTimeOfDay", label: "Доп. вариант: другое время суток" },
             { k: "extraSeason", label: "Доп. вариант: другое время года" },
@@ -917,7 +852,6 @@ function PricingConfigurator({ onChange }) {
         </CardContent>
       </Card>
 
-      {/* Итог */}
       <Card className="rounded-2xl border-neutral-800 lg:col-span-1">
         <CardHeader>
           <CardTitle className="text-xl">Итог</CardTitle>
@@ -972,10 +906,6 @@ function PricingConfigurator({ onChange }) {
     </div>
   );
 }
-
-/* =========================================================
-   УТИЛИТЫ
-   ========================================================= */
 
 function formatRub(n) {
   return new Intl.NumberFormat("ru-RU", {
