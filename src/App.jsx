@@ -413,7 +413,7 @@ export default function Landing3D() {
         transition={{ type: "spring", stiffness: 70 }}
       >
         <motion.img
-          src="/hero-3d.jpg"
+          src="public/hero-3d.jpg"
           alt="Рабочая сцена 3D-визуализации"
           className="block w-full h-[360px] md:h-[460px] object-cover"
           initial={{ scale: 1.02, opacity: 0 }}
