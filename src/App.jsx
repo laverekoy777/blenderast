@@ -1,21 +1,55 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Check, MoveRight, Star, Shield, Zap, Camera, Building2, Cpu, Sparkles } from "lucide-react";
+import {
+  Check,
+  MoveRight,
+  Star,
+  Shield,
+  Zap,
+  Camera,
+  Building2,
+  Cpu,
+  Sparkles,
+} from "lucide-react";
 
-// ---------- ДАННЫЕ ----------
+// ---------- ДАННЫЕ: проекты с несколькими фото ----------
 const portfolio = [
-  { src: "https://cdn-edge.kwork.ru/files/portfolio/t0/05/8958db0c58e0ea85151b13214e4539ea6463d0f4-1753879705.webp", alt: "Экстерьер — villa dusk", cat: "Экстерьеры" },
-  { src: "https://cdn-edge.kwork.ru/files/portfolio/t0/09/3037b1d49d420aa3e9cccd4041e5f6041fb6ef7f-1753879709.webp", alt: "Интерьер — living room", cat: "Интерьеры" },
-  { src: "https://cdn-edge.kwork.ru/files/portfolio/t0/10/73c93bc766488b868e0d166fed66dd6260898aa6-1753879710.webp", alt: "Коммерческая — lobby", cat: "Коммерческие" },
-  { src: "https://cdn-edge.kwork.ru/files/portfolio/t0/05/8958db0c58e0ea85151b13214e4539ea6463d0f4-1753879705.webp", alt: "Мастер-план — квартал", cat: "Мастер-план" },
-  { src: "https://cdn-edge.kwork.ru/files/portfolio/t0/09/3037b1d49d420aa3e9cccd4041e5f6041fb6ef7f-1753879709.webp", alt: "Интерьер — kitchen", cat: "Интерьеры" },
-  { src: "https://cdn-edge.kwork.ru/files/portfolio/t0/10/73c93bc766488b868e0d166fed66dd6260898aa6-1753879710.webp", alt: "Коммерческая — hall", cat: "Коммерческие" },
-  { src: "https://cdn-edge.kwork.ru/files/portfolio/t0/05/8958db0c58e0ea85151b13214e4539ea6463d0f4-1753879705.webp", alt: "Экстерьер — facade", cat: "Экстерьеры" },
+  {
+    title: "Загородный дом — вечер",
+    cat: "Экстерьеры",
+    images: [
+      "https://cdn-edge.kwork.ru/files/portfolio/t0/90/86dc14a1e666ee9c51520b5f1a50986603d4b1f1-1753866290.webp",
+      "https://cdn-edge.kwork.ru/files/portfolio/t0/92/453292ee2770e44bb679a57bc6ef3288a4ea433c-1753866292.webp",
+      "https://cdn-edge.kwork.ru/files/portfolio/t0/96/31031c9c8a9da091dd92a688cf767f140939784f-1753866296.webp",
+    ],
+    cover:
+      "https://cdn-edge.kwork.ru/files/portfolio/t0/90/86dc14a1e666ee9c51520b5f1a50986603d4b1f1-1753866290.webp",
+  },
+  {
+    title: "Интерьер — living room",
+    cat: "Интерьеры",
+    images: [
+      "https://cdn-edge.kwork.ru/files/portfolio/t0/09/3037b1d49d420aa3e9cccd4041e5f6041fb6ef7f-1753879709.webp",
+    ],
+    cover:
+      "https://cdn-edge.kwork.ru/files/portfolio/t0/09/3037b1d49d420aa3e9cccd4041e5f6041fb6ef7f-1753879709.webp",
+  },
+  {
+    title: "Коммерческая — lobby",
+    cat: "Коммерческие",
+    images: [
+      "https://cdn-edge.kwork.ru/files/portfolio/t0/10/73c93bc766488b868e0d166fed66dd6260898aa6-1753879710.webp",
+    ],
+    cover:
+      "https://cdn-edge.kwork.ru/files/portfolio/t0/10/73c93bc766488b868e0d166fed66dd6260898aa6-1753879710.webp",
+  },
+  // добавляй больше проектов по этому же шаблону
 ];
+
 const categories = ["Все", "Экстерьеры", "Интерьеры", "Коммерческие", "Мастер-план"];
 
 // ---------- МЕЛКИЕ КОМПОНЕНТЫ ----------
@@ -70,10 +104,28 @@ function AccordionItem({ q, a }) {
   );
 }
 
+// ---------- ПОРТФОЛИО (табы + сетка + лайтбокс-слайдер) ----------
 function PortfolioTabs() {
   const [active, setActive] = useState("Все");
-  const [lightbox, setLightbox] = useState(null);
+  const [lightbox, setLightbox] = useState(null); // { images:[], index:0, title:"" }
+
   const items = active === "Все" ? portfolio : portfolio.filter((i) => i.cat === active);
+
+  const close = () => setLightbox(null);
+  const next = () => setLightbox((lb) => lb && { ...lb, index: (lb.index + 1) % lb.images.length });
+  const prev = () =>
+    setLightbox((lb) => lb && { ...lb, index: (lb.index - 1 + lb.images.length) % lb.images.length });
+
+  useEffect(() => {
+    if (!lightbox) return;
+    const onKey = (e) => {
+      if (e.key === "Escape") close();
+      if (e.key === "ArrowRight") next();
+      if (e.key === "ArrowLeft") prev();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [lightbox]);
 
   return (
     <div>
@@ -94,56 +146,116 @@ function PortfolioTabs() {
         ))}
       </div>
 
-      {/* Grid */}
+      {/* Grid из проектов */}
       <motion.div layout className="grid md:grid-cols-3 gap-6">
         <AnimatePresence>
-          {items.map((g, i) => (
+          {items.map((p, i) => (
             <motion.div
-              key={`${g.src}-${i}-${active}`}
+              key={`${p.title}-${i}-${active}`}
               layout
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.35 }}
-              className="overflow-hidden rounded-2xl border border-neutral-800 cursor-pointer group"
-              onClick={() => setLightbox({ src: g.src, alt: g.alt })}
+              className="overflow-hidden rounded-2xl border border-neutral-800 cursor-pointer group relative"
+              onClick={() => setLightbox({ images: p.images, index: 0, title: p.title })}
               whileHover={{ y: -6 }}
             >
               <img
-                src={g.src}
-                alt={g.alt}
+                src={p.cover || p.images[0]}
+                alt={p.title}
                 className="h-48 w-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
               />
               <div className="p-4 flex items-center justify-between">
                 <div className="text-sm text-gray-300 flex items-center gap-2">
                   <Building2 className="h-4 w-4 text-emerald-400" />
-                  {g.alt}
+                  {p.title}
                 </div>
-                <span className="text-xs text-gray-500">{g.cat}</span>
+                <span className="text-xs text-gray-500">{p.cat}</span>
               </div>
+              {p.images.length > 1 && (
+                <div className="absolute top-2 right-2 text-[11px] bg-black/60 text-white px-2 py-1 rounded-full">
+                  {p.images.length} фото
+                </div>
+              )}
             </motion.div>
           ))}
         </AnimatePresence>
       </motion.div>
 
-      {/* LIGHTBOX */}
+      {/* LIGHTBOX-СЛАЙДЕР */}
       <AnimatePresence>
         {lightbox && (
           <motion.div
-            className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-6"
+            className="fixed inset-0 z-50 bg-black/85 flex items-center justify-center p-6"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            onClick={() => setLightbox(null)}
+            onClick={close}
           >
+            <div className="absolute top-6 left-0 right-0 mx-auto max-w-4xl px-6 text-center text-sm text-gray-300">
+              {lightbox.title}
+            </div>
+
             <motion.img
-              src={lightbox.src}
-              alt={lightbox.alt}
-              className="max-h-[85vh] max-w-[90vw] rounded-2xl"
-              initial={{ scale: 0.95, opacity: 0 }}
+              src={lightbox.images[lightbox.index]}
+              alt={`${lightbox.title} — ${lightbox.index + 1}/${lightbox.images.length}`}
+              className="max-h-[80vh] max-w-[90vw] rounded-2xl shadow-2xl"
+              initial={{ scale: 0.97, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.95, opacity: 0 }}
+              exit={{ scale: 0.97, opacity: 0 }}
+              onClick={(e) => e.stopPropagation()}
             />
+
+            {lightbox.images.length > 1 && (
+              <>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    prev();
+                  }}
+                  className="absolute left-6 md:left-10 top-1/2 -translate-y-1/2 px-3 py-2 rounded-full bg-white/10 hover:bg-white/20"
+                  aria-label="Предыдущий кадр"
+                >
+                  ←
+                </button>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    next();
+                  }}
+                  className="absolute right-6 md:right-10 top-1/2 -translate-y-1/2 px-3 py-2 rounded-full bg-white/10 hover:bg-white/20"
+                  aria-label="Следующий кадр"
+                >
+                  →
+                </button>
+              </>
+            )}
+
+            <div className="absolute bottom-6 left-0 right-0 mx-auto flex items-center justify-center gap-2">
+              {lightbox.images.map((_, idx) => (
+                <button
+                  key={idx}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setLightbox((lb) => ({ ...lb, index: idx }));
+                  }}
+                  className={`h-2 w-2 rounded-full ${idx === lightbox.index ? "bg-emerald-400" : "bg-white/40"}`}
+                  aria-label={`Кадр ${idx + 1}`}
+                />
+              ))}
+            </div>
+
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                close();
+              }}
+              className="absolute top-6 right-6 md:right-10 px-3 py-1.5 rounded-full bg-white/10 hover:bg-white/20"
+              aria-label="Закрыть"
+            >
+              Закрыть
+            </button>
           </motion.div>
         )}
       </AnimatePresence>
@@ -192,11 +304,21 @@ export default function Landing3D() {
             <span className="font-semibold">blenderast</span>
           </div>
           <nav className="hidden md:flex items-center gap-6 text-sm">
-            <a href="#work" className="hover:opacity-70">Портфолио</a>
-            <a href="#why" className="hover:opacity-70">Почему мы</a>
-            <a href="#about" className="hover:opacity-70">Обо мне</a>
-            <a href="#faq" className="hover:opacity-70">FAQ</a>
-            <a href="#brief" className="hover:opacity-70">Получить расчёт</a>
+            <a href="#work" className="hover:opacity-70">
+              Портфолио
+            </a>
+            <a href="#why" className="hover:opacity-70">
+              Почему мы
+            </a>
+            <a href="#about" className="hover:opacity-70">
+              Обо мне
+            </a>
+            <a href="#faq" className="hover:opacity-70">
+              FAQ
+            </a>
+            <a href="#brief" className="hover:opacity-70">
+              Получить расчёт
+            </a>
           </nav>
           <a href="#brief">
             <Button className="rounded-2xl bg-emerald-500 text-neutral-900">Расчёт проекта</Button>
@@ -207,12 +329,7 @@ export default function Landing3D() {
       {/* Hero */}
       <section className="relative overflow-hidden">
         <div className="max-w-6xl mx-auto px-4 py-16 grid md:grid-cols-2 gap-10 items-center">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-          >
+          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }}>
             <h1 className="text-4xl md:text-5xl font-bold leading-tight">
               <span className="bg-gradient-to-r from-sky-400 via-cyan-300 to-emerald-300 bg-clip-text text-transparent">
                 Фотореалистичная 3D-визуализация
@@ -230,10 +347,7 @@ export default function Landing3D() {
                 </Button>
               </a>
               <a href="#brief">
-                <Button
-                  className="rounded-2xl border-emerald-500 text-emerald-400 hover:bg-emerald-900/40"
-                  variant="outline"
-                >
+                <Button className="rounded-2xl border-emerald-500 text-emerald-400 hover:bg-emerald-900/40" variant="outline">
                   Получить 3 кадра теста <MoveRight className="inline h-4 w-4 ml-1" />
                 </Button>
               </a>
@@ -245,24 +359,18 @@ export default function Landing3D() {
             </div>
           </motion.div>
 
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            className="relative"
-          >
+          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ duration: 0.8 }} className="relative">
             <motion.div
               initial={{ rotate: -6, y: 20 }}
               whileInView={{ rotate: 0, y: 0 }}
               transition={{ type: "spring", stiffness: 70 }}
               className="grid grid-cols-2 gap-3"
             >
-              {portfolio.slice(0, 4).map((g, i) => (
+              {portfolio.slice(0, 4).map((p, i) => (
                 <motion.img
                   key={i}
-                  src={g.src}
-                  alt={g.alt}
+                  src={p.cover || p.images[0]}
+                  alt={p.title}
                   className="rounded-2xl shadow-sm object-cover h-40 md:h-56 w-full"
                   whileHover={{ scale: 1.03 }}
                 />
@@ -295,18 +403,10 @@ export default function Landing3D() {
             />
           </motion.div>
           <motion.div variants={sectionReveal} custom={1}>
-            <Feature
-              icon={Cpu}
-              title="Оптимизированный пайплайн"
-              text="Скрипты/ноды и рендер-ферма → быстрые превью и предсказуемые сроки."
-            />
+            <Feature icon={Cpu} title="Оптимизированный пайплайн" text="Скрипты/ноды и рендер-ферма → быстрые превью и предсказуемые сроки." />
           </motion.div>
           <motion.div variants={sectionReveal} custom={2}>
-            <Feature
-              icon={Shield}
-              title="Прозрачные сроки и цена"
-              text="Фикс по брифу. Исходники/кадры в срок, 2 раунда правок включены."
-            />
+            <Feature icon={Shield} title="Прозрачные сроки и цена" text="Фикс по брифу. Исходники/кадры в срок, 2 раунда правок включены." />
           </motion.div>
         </motion.div>
       </section>
@@ -372,9 +472,18 @@ export default function Landing3D() {
               </CardHeader>
               <CardContent>
                 <ul className="space-y-2 text-sm text-gray-300">
-                  <li className="flex items-start gap-2"><Check className="h-4 w-4 text-gray-400" />Качество: среднее/низкое</li>
-                  <li className="flex items-start gap-2"><Check className="h-4 w-4 text-gray-400" />Сроки: 7–14 дней</li>
-                  <li className="flex items-start gap-2"><Check className="h-4 w-4 text-gray-400" />Цена: условно X × 3</li>
+                  <li className="flex items-start gap-2">
+                    <Check className="h-4 w-4 text-gray-400" />
+                    Качество: среднее/низкое
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <Check className="h-4 w-4 text-gray-400" />
+                    Сроки: 7–14 дней
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <Check className="h-4 w-4 text-gray-400" />
+                    Цена: условно X × 3
+                  </li>
                 </ul>
               </CardContent>
             </Card>
@@ -384,9 +493,18 @@ export default function Landing3D() {
               </CardHeader>
               <CardContent>
                 <ul className="space-y-2 text-sm text-gray-100">
-                  <li className="flex items-start gap-2"><Check className="h-4 w-4 text-emerald-400" />Фотореализм: высокий</li>
-                  <li className="flex items-start gap-2"><Check className="h-4 w-4 text-emerald-400" />Сроки: превью 48ч</li>
-                  <li className="flex items-start gap-2"><Check className="h-4 w-4 text-emerald-400" />Цена: X (на 30–60% ниже)</li>
+                  <li className="flex items-start gap-2">
+                    <Check className="h-4 w-4 text-emerald-400" />
+                    Фотореализм: высокий
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <Check className="h-4 w-4 text-emerald-400" />
+                    Сроки: превью 48ч
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <Check className="h-4 w-4 text-emerald-400" />
+                    Цена: X (на 30–60% ниже)
+                  </li>
                 </ul>
               </CardContent>
             </Card>
@@ -400,20 +518,20 @@ export default function Landing3D() {
           <div>
             <h2 className="text-3xl font-bold mb-4">Обо мне</h2>
             <p className="text-gray-300 leading-relaxed mb-4">
-              Я Марат — спец по архвизу. Делаю не «красивые картинки», а кадры, которые помогают
-              продать идею проекта: они вызывают доверие у инвесторов и понятны покупателю, потому что выглядят как фото.
+              Я Марат — спец по архвизу. Делаю не «красивые картинки», а кадры, которые помогают продать идею проекта:
+              они вызывают доверие у инвесторов и понятны покупателю, потому что выглядят как фото.
             </p>
             <p className="text-gray-300 leading-relaxed mb-4">
-              На счету — 50+ проектов по России: от частных интерьеров до жилых комплексов. Среди клиентов: СК «Золотое
-              Сечение», «Modul Modus», «Летник ПРО», «Базовый Модуль». Меня ценят за скорость и предсказуемость.
+              На счету — 50+ проектов по России: от частных интерьеров до жилых комплексов. Среди клиентов:
+              СК «Золотое Сечение», «Modul Modus», «Летник ПРО», «Базовый Модуль». Меня ценят за скорость и предсказуемость.
             </p>
             <p className="text-gray-300 leading-relaxed mb-4">
-              В отличие от студий, где один кадр делают неделями, первые превью показываю через 48 часов —
-              так быстрее согласовывать детали и экономить бюджет.
+              В отличие от студий, где один кадр делают неделями, первые превью показываю через 48 часов — так быстрее
+              согласовывать детали и экономить бюджет.
             </p>
             <p className="text-gray-300 leading-relaxed">
-              Политика простая: <span className="text-emerald-400 font-medium">правки входят в стоимость</span> до совпадения с ожиданиями.
-              Поэтому вы заранее понимаете итог и сроки — без сюрпризов.
+              Политика простая: <span className="text-emerald-400 font-medium">правки входят в стоимость</span> до совпадения с
+              ожиданиями. Поэтому вы заранее понимаете итог и сроки — без сюрпризов.
             </p>
           </div>
           <div className="bg-neutral-900 border border-neutral-800 rounded-2xl p-6">
@@ -448,14 +566,20 @@ export default function Landing3D() {
                 <Input name="phone" placeholder="Телефон / WhatsApp" />
                 <Input name="city" placeholder="Город / Часовой пояс" />
                 <div className="md:col-span-2">
-                  <Textarea name="details" placeholder="Опишите объект: площадь, стиль, сроки, референсы" className="min-h-[120px]" />
+                  <Textarea
+                    name="details"
+                    placeholder="Опишите объект: площадь, стиль, сроки, референсы"
+                    className="min-h-[120px]"
+                  />
                 </div>
 
                 <div className="md:col-span-2 flex items-center justify-between gap-4">
                   <div className="text-xs text-gray-400">
                     Защита от спама: honeypot + ограничение частоты. Для боевого сайта добавьте Cloudflare Turnstile/reCAPTCHA.
                   </div>
-                  <Button type="submit" className="rounded-2xl bg-emerald-500 text-neutral-900">Отправить запрос</Button>
+                  <Button type="submit" className="rounded-2xl bg-emerald-500 text-neutral-900">
+                    Отправить запрос
+                  </Button>
                 </div>
               </form>
             </CardContent>
@@ -467,7 +591,7 @@ export default function Landing3D() {
       <section id="faq" className="py-16 bg-neutral-900 border-t">
         <div className="max-w-6xl mx-auto px-4 grid md:grid-cols-2 gap-6">
           <div>
-            <h2 className="text-3xl font-bold">FAQ — Вопросы и ответы</h2>
+            <h2 className="text-3л font-bold text-3xl">FAQ — Вопросы и ответы</h2>
             <p className="mt-2 text-gray-400">Нажмите на вопрос, чтобы раскрыть ответ.</p>
           </div>
           <div className="space-y-3">
@@ -484,7 +608,7 @@ export default function Landing3D() {
                 q: "Какие программы используете?",
                 a: "3ds Max/Blender, Corona/V-Ray/Cycles, Substance, Photoshop. Исходники — по согласованию.",
               },
-              { q: "Правки включены?", a: "Да, 2 раунда базовых правок включены, дальше — почасово по прозрачной ставке." },
+              { q: "Правки включены?", a: "Да, 2 раунда базовых правок включены, далее — почасово по прозрачной ставке." },
             ].map((item, idx) => (
               <AccordionItem key={idx} q={item.q} a={item.a} />
             ))}
