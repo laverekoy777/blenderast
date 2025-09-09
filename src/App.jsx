@@ -6,23 +6,24 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Check, MoveRight, Star, Shield, Zap, Camera, Building2, Cpu, Sparkles } from "lucide-react";
 
-// NOTE: Replace placeholder images with your renders. 1920x1080 recommended.
-// Портфолио с категориями
+// ---------- ДАННЫЕ ----------
 const portfolio = [
   { src: "https://cdn-edge.kwork.ru/files/portfolio/t0/05/8958db0c58e0ea85151b13214e4539ea6463d0f4-1753879705.webp", alt: "Экстерьер — villa dusk", cat: "Экстерьеры" },
   { src: "https://cdn-edge.kwork.ru/files/portfolio/t0/09/3037b1d49d420aa3e9cccd4041e5f6041fb6ef7f-1753879709.webp", alt: "Интерьер — living room", cat: "Интерьеры" },
   { src: "https://cdn-edge.kwork.ru/files/portfolio/t0/10/73c93bc766488b868e0d166fed66dd6260898aa6-1753879710.webp", alt: "Коммерческая — lobby", cat: "Коммерческие" },
   { src: "https://cdn-edge.kwork.ru/files/portfolio/t0/05/8958db0c58e0ea85151b13214e4539ea6463d0f4-1753879705.webp", alt: "Мастер-план — квартал", cat: "Мастер-план" },
-  // дубли для сетки
   { src: "https://cdn-edge.kwork.ru/files/portfolio/t0/09/3037b1d49d420aa3e9cccd4041e5f6041fb6ef7f-1753879709.webp", alt: "Интерьер — kitchen", cat: "Интерьеры" },
   { src: "https://cdn-edge.kwork.ru/files/portfolio/t0/10/73c93bc766488b868e0d166fed66dd6260898aa6-1753879710.webp", alt: "Коммерческая — hall", cat: "Коммерческие" },
   { src: "https://cdn-edge.kwork.ru/files/portfolio/t0/05/8958db0c58e0ea85151b13214e4539ea6463d0f4-1753879705.webp", alt: "Экстерьер — facade", cat: "Экстерьеры" },
 ];
 const categories = ["Все", "Экстерьеры", "Интерьеры", "Коммерческие", "Мастер-план"];
 
+// ---------- МЕЛКИЕ КОМПОНЕНТЫ ----------
 const Feature = ({ icon: Icon, title, text }) => (
   <div className="flex gap-4">
-    <div className="h-12 w-12 rounded-2xl bg-neutral-800 flex items-center justify-center"><Icon className="h-6 w-6" /></div>
+    <div className="h-12 w-12 rounded-2xl bg-neutral-800 flex items-center justify-center">
+      <Icon className="h-6 w-6 text-emerald-400" />
+    </div>
     <div>
       <h4 className="font-semibold text-gray-100">{title}</h4>
       <p className="text-gray-300 text-sm leading-relaxed">{text}</p>
@@ -37,16 +38,37 @@ const Stat = ({ value, label }) => (
   </div>
 );
 
-const FAQItem = ({ q, a }) => (
-  <Card className="border-neutral-800">
-    <CardHeader>
-      <CardTitle className="text-base">{q}</CardTitle>
-    </CardHeader>
-    <CardContent>
-      <p className="text-sm text-gray-300 leading-relaxed">{a}</p>
-    </CardContent>
-  </Card>
-);
+function AccordionItem({ q, a }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <div className={`border border-neutral-800 rounded-xl overflow-hidden ${open ? "bg-neutral-950" : ""}`}>
+      <button onClick={() => setOpen(!open)} className="w-full text-left p-4 flex items-center justify-between">
+        <span className="font-medium">{q}</span>
+        <svg
+          className={`h-5 w-5 transition-transform ${open ? "rotate-180 text-emerald-400" : "text-gray-500"}`}
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+        >
+          <path d="M6 9l6 6 6-6" />
+        </svg>
+      </button>
+      <AnimatePresence initial={false}>
+        {open && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            className="px-4 pb-4 text-sm text-gray-300"
+          >
+            {a}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
 
 function PortfolioTabs() {
   const [active, setActive] = useState("Все");
@@ -55,13 +77,16 @@ function PortfolioTabs() {
 
   return (
     <div>
+      {/* Tabs */}
       <div className="flex flex-wrap gap-2 mb-6">
         {categories.map((c) => (
           <button
             key={c}
             onClick={() => setActive(c)}
             className={`px-4 py-2 rounded-full text-sm border transition ${
-              active === c ? "bg-white text-neutral-900" : "border-neutral-700 hover:bg-neutral-900"
+              active === c
+                ? "bg-emerald-500 text-neutral-900 border-emerald-500"
+                : "border-neutral-700 text-gray-300 hover:bg-neutral-900"
             }`}
           >
             {c}
@@ -69,6 +94,7 @@ function PortfolioTabs() {
         ))}
       </div>
 
+      {/* Grid */}
       <motion.div layout className="grid md:grid-cols-3 gap-6">
         <AnimatePresence>
           {items.map((g, i) => (
@@ -78,13 +104,21 @@ function PortfolioTabs() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.3 }}
-              className="overflow-hidden rounded-2xl border border-neutral-800 cursor-pointer"
+              transition={{ duration: 0.35 }}
+              className="overflow-hidden rounded-2xl border border-neutral-800 cursor-pointer group"
               onClick={() => setLightbox({ src: g.src, alt: g.alt })}
+              whileHover={{ y: -6 }}
             >
-              <img src={g.src} alt={g.alt} className="h-48 w-full object-cover" />
+              <img
+                src={g.src}
+                alt={g.alt}
+                className="h-48 w-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
+              />
               <div className="p-4 flex items-center justify-between">
-                <div className="text-sm text-gray-300 flex items-center gap-2"><Building2 className="h-4 w-4"/>{g.alt}</div>
+                <div className="text-sm text-gray-300 flex items-center gap-2">
+                  <Building2 className="h-4 w-4 text-emerald-400" />
+                  {g.alt}
+                </div>
                 <span className="text-xs text-gray-500">{g.cat}</span>
               </div>
             </motion.div>
@@ -117,7 +151,7 @@ function PortfolioTabs() {
   );
 }
 
-// Анимационные пресеты для плавного появления секций и элементов
+// ---------- АНИМАЦИИ/ФОН ----------
 const sectionReveal = {
   hidden: { opacity: 0, y: 24 },
   show: (i = 0) => ({ opacity: 1, y: 0, transition: { duration: 0.6, delay: i * 0.08 } }),
@@ -127,55 +161,82 @@ function BackgroundFX() {
   return (
     <div aria-hidden className="pointer-events-none fixed inset-0 -z-10">
       {/* мягкая сетка */}
-      <div className="absolute inset-0 opacity-[0.04]"
-           style={{
-             backgroundImage:
-               "linear-gradient(to right, rgba(255,255,255,.6) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,.6) 1px, transparent 1px)",
-             backgroundSize: "36px 36px",
-           }}
+      <div
+        className="absolute inset-0 opacity-[0.04]"
+        style={{
+          backgroundImage:
+            "linear-gradient(to right, rgba(255,255,255,.6) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,.6) 1px, transparent 1px)",
+          backgroundSize: "36px 36px",
+        }}
       />
       {/* радиальный свет */}
-      <div className="absolute -top-40 left-1/2 -translate-x-1/2 h-[520px] w-[720px] rounded-full blur-3xl opacity-20"
-           style={{ background: "radial-gradient(600px 300px at center, rgba(56,189,248,.6), transparent 60%)" }} />
+      <div
+        className="absolute -top-40 left-1/2 -translate-x-1/2 h-[520px] w-[720px] rounded-full blur-3xl opacity-20"
+        style={{ background: "radial-gradient(600px 300px at center, rgba(56,189,248,.6), transparent 60%)" }}
+      />
     </div>
   );
 }
 
+// ---------- СТРАНИЦА ----------
 export default function Landing3D() {
   return (
-    
     <div className="min-h-screen bg-neutral-950 text-gray-100">
       <BackgroundFX />
+
       {/* Nav */}
       <header className="sticky top-0 z-40 bg-neutral-950/80 backdrop-blur border-b border-neutral-800">
         <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Sparkles className="h-5 w-5" />
+            <Sparkles className="h-5 w-5 text-emerald-400" />
             <span className="font-semibold">blenderast</span>
           </div>
           <nav className="hidden md:flex items-center gap-6 text-sm">
             <a href="#work" className="hover:opacity-70">Портфолио</a>
             <a href="#why" className="hover:opacity-70">Почему мы</a>
+            <a href="#about" className="hover:opacity-70">Обо мне</a>
             <a href="#faq" className="hover:opacity-70">FAQ</a>
             <a href="#brief" className="hover:opacity-70">Получить расчёт</a>
           </nav>
-          <a href="#brief"><Button className="rounded-2xl">Расчёт проекта</Button></a>
+          <a href="#brief">
+            <Button className="rounded-2xl bg-emerald-500 text-neutral-900">Расчёт проекта</Button>
+          </a>
         </div>
       </header>
 
       {/* Hero */}
       <section className="relative overflow-hidden">
         <div className="max-w-6xl mx-auto px-4 py-16 grid md:grid-cols-2 gap-10 items-center">
-          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }}>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
             <h1 className="text-4xl md:text-5xl font-bold leading-tight">
-              <span className="bg-gradient-to-r from-sky-400 via-cyan-300 to-emerald-300 bg-clip-text text-transparent">Фотореалистичная 3D-визуализация</span> <span className="whitespace-nowrap">без переплаты</span>
+              <span className="bg-gradient-to-r from-sky-400 via-cyan-300 to-emerald-300 bg-clip-text text-transparent">
+                Фотореалистичная 3D-визуализация
+              </span>{" "}
+              <span className="whitespace-nowrap">без переплаты</span>
             </h1>
             <p className="mt-4 text-gray-300 text-lg">
-              Реализм выше рынка, стоимость ниже конкурентов. В среднем экономим заказчикам до 30–40% бюджета без потери качества.
+              Реализм выше рынка, стоимость ниже конкурентов. В среднем экономим заказчикам до 30–40% бюджета без потери
+              качества.
             </p>
             <div className="mt-6 flex gap-3">
-              <a href="#work"><Button className="rounded-2xl" variant="default">Смотреть работы</Button></a>
-              <a href="#brief"><Button className="rounded-2xl" variant="outline">Получить 3 кадра теста <MoveRight className="inline h-4 w-4 ml-1"/></Button></a>
+              <a href="#work">
+                <Button className="rounded-2xl bg-emerald-500 text-neutral-900" variant="default">
+                  Смотреть работы
+                </Button>
+              </a>
+              <a href="#brief">
+                <Button
+                  className="rounded-2xl border-emerald-500 text-emerald-400 hover:bg-emerald-900/40"
+                  variant="outline"
+                >
+                  Получить 3 кадра теста <MoveRight className="inline h-4 w-4 ml-1" />
+                </Button>
+              </a>
             </div>
             <div className="mt-8 grid grid-cols-3 md:w-3/4">
               <Stat value="10+" label="лет опыта" />
@@ -184,16 +245,27 @@ export default function Landing3D() {
             </div>
           </motion.div>
 
-          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ duration: 0.8 }} className="relative">
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="relative"
+          >
             <motion.div
               initial={{ rotate: -6, y: 20 }}
               whileInView={{ rotate: 0, y: 0 }}
               transition={{ type: "spring", stiffness: 70 }}
               className="grid grid-cols-2 gap-3"
             >
-              {portfolio.slice(0,4).map((g, i) => (
-                <motion.img key={i} src={g.src} alt={g.alt} className="rounded-2xl shadow-sm object-cover h-40 md:h-56 w-full"
-                  whileHover={{ scale: 1.03 }} />
+              {portfolio.slice(0, 4).map((g, i) => (
+                <motion.img
+                  key={i}
+                  src={g.src}
+                  alt={g.alt}
+                  className="rounded-2xl shadow-sm object-cover h-40 md:h-56 w-full"
+                  whileHover={{ scale: 1.03 }}
+                />
               ))}
             </motion.div>
             <motion.div
@@ -209,11 +281,33 @@ export default function Landing3D() {
 
       {/* Why */}
       <section id="why" className="py-14 bg-neutral-900 border-y">
-        <motion.div className="max-w-6xl mx-auto px-4 grid md:grid-cols-3 gap-8"
-          initial="hidden" whileInView="show" viewport={{ once: true, margin: "-80px" }}>
-          <motion.div variants={sectionReveal} custom={0}><Feature icon={Camera} title="Реализм как в фото" text="PBR-материалы, HDRI-свет, физическая камера. Детализация до фурнитуры и микрорельефов." /></motion.div>
-          <motion.div variants={sectionReveal} custom={1}><Feature icon={Cpu} title="Оптимизированный пайплайн" text="Сценарии автоматизации, ноды и рендер-ферма → быстрые превью и предсказуемые сроки." /></motion.div>
-          <motion.div variants={sectionReveal} custom={2}><Feature icon={Shield} title="Прозрачные сроки и цена" text="Фикс по брифу. Отдаём исходники/кадры в срок, без доплат за базовые правки." /></motion.div>
+        <motion.div
+          className="max-w-6xl mx-auto px-4 grid md:grid-cols-3 gap-8"
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, margin: "-80px" }}
+        >
+          <motion.div variants={sectionReveal} custom={0}>
+            <Feature
+              icon={Camera}
+              title="Реализм как в фото"
+              text="PBR-материалы, HDRI-свет, физическая камера. Детализация до фурнитуры и микрорельефов."
+            />
+          </motion.div>
+          <motion.div variants={sectionReveal} custom={1}>
+            <Feature
+              icon={Cpu}
+              title="Оптимизированный пайплайн"
+              text="Скрипты/ноды и рендер-ферма → быстрые превью и предсказуемые сроки."
+            />
+          </motion.div>
+          <motion.div variants={sectionReveal} custom={2}>
+            <Feature
+              icon={Shield}
+              title="Прозрачные сроки и цена"
+              text="Фикс по брифу. Исходники/кадры в срок, 2 раунда правок включены."
+            />
+          </motion.div>
         </motion.div>
       </section>
 
@@ -222,39 +316,45 @@ export default function Landing3D() {
         <div className="max-w-6xl mx-auto px-4">
           <div className="flex items-end justify-between gap-4 mb-6">
             <h2 className="text-3xl font-bold">Портфолио</h2>
-            <p className="text-sm text-gray-400">Выберите категорию: экстерьеры, интерьеры, коммерческие, мастер‑план.</p>
+            <p className="text-sm text-gray-400">Фильтруйте по категориям: экстерьеры, интерьеры, коммерческие, мастер-план.</p>
           </div>
-
-          {/* Tabs */}
           <PortfolioTabs />
         </div>
       </section>
 
       {/* Social proof */}
       <section className="py-12 bg-neutral-950">
-        <motion.div className="max-w-6xl mx-auto px-4 grid md:grid-cols-3 gap-6"
-          initial="hidden" whileInView="show" viewport={{ once: true }}>
+        <motion.div className="max-w-6xl mx-auto px-4 grid md:grid-cols-3 gap-6" initial="hidden" whileInView="show" viewport={{ once: true }}>
           <motion.div variants={sectionReveal} className="transition-transform hover:-translate-y-1">
             <Card>
               <CardContent className="p-6">
-                <div className="flex items-center gap-2 text-amber-500"><Star className="h-5 w-5"/><span className="font-semibold">98% довольных заказчиков</span></div>
-                <p className="text-sm text-gray-300 mt-2">Средняя оценка по проектам 4.9/5. Подписываем NDA, соблюдаем дедлайны.</p>
+                <div className="flex items-center gap-2 text-amber-500">
+                  <Star className="h-5 w-5" />
+                  <span className="font-semibold">98% довольных заказчиков</span>
+                </div>
+                <p className="text-sm text-gray-300 mt-2">Средняя оценка 4.9/5. NDA — по запросу. Дедлайны соблюдаем.</p>
               </CardContent>
             </Card>
           </motion.div>
           <motion.div variants={sectionReveal} className="transition-transform hover:-translate-y-1">
             <Card>
               <CardContent className="p-6">
-                <div className="flex items-center gap-2 text-green-600"><Zap className="h-5 w-5"/><span className="font-semibold">Первый драфт — 48 часов</span></div>
-                <p className="text-sm text-gray-300 mt-2">Чёткий этапинг: бриф → серый каркас → материалы/свет → финал.</p>
+                <div className="flex items-center gap-2 text-emerald-400">
+                  <Zap className="h-5 w-5" />
+                  <span className="font-semibold">Первый драфт — 48 часов</span>
+                </div>
+                <p className="text-sm text-gray-300 mt-2">Этапинг: бриф → серый каркас → материалы/свет → финал.</p>
               </CardContent>
             </Card>
           </motion.div>
           <motion.div variants={sectionReveal} className="transition-transform hover:-translate-y-1">
             <Card>
               <CardContent className="p-6">
-                <div className="flex items-center gap-2 text-blue-600"><Shield className="h-5 w-5"/><span className="font-semibold">Гарантия правок</span></div>
-                <p className="text-sm text-gray-300 mt-2">2 раунда базовых правок включены. Дальше — почасово по прайсу.</p>
+                <div className="flex items-center gap-2 text-blue-500">
+                  <Shield className="h-5 w-5" />
+                  <span className="font-semibold">Гарантия правок</span>
+                </div>
+                <p className="text-sm text-gray-300 mt-2">2 раунда базовых правок включены. Далее — почасово по прайсу.</p>
               </CardContent>
             </Card>
           </motion.div>
@@ -272,9 +372,9 @@ export default function Landing3D() {
               </CardHeader>
               <CardContent>
                 <ul className="space-y-2 text-sm text-gray-300">
-                  <li className="flex items-start gap-2"><Check className="h-4 w-4 text-gray-400"/>Качество: среднее/низкое</li>
-                  <li className="flex items-start gap-2"><Check className="h-4 w-4 text-gray-400"/>Сроки: 7–14 дней</li>
-                  <li className="flex items-start gap-2"><Check className="h-4 w-4 text-gray-400"/>Цена: условно X × 3</li>
+                  <li className="flex items-start gap-2"><Check className="h-4 w-4 text-gray-400" />Качество: среднее/низкое</li>
+                  <li className="flex items-start gap-2"><Check className="h-4 w-4 text-gray-400" />Сроки: 7–14 дней</li>
+                  <li className="flex items-start gap-2"><Check className="h-4 w-4 text-gray-400" />Цена: условно X × 3</li>
                 </ul>
               </CardContent>
             </Card>
@@ -283,10 +383,10 @@ export default function Landing3D() {
                 <CardTitle>Мы</CardTitle>
               </CardHeader>
               <CardContent>
-                <ul className="space-y-2 text-sm text-gray-700">
-                  <li className="flex items-start gap-2"><Check className="h-4 w-4 text-emerald-500"/>Фотореализм: высокий</li>
-                  <li className="flex items-start gap-2"><Check className="h-4 w-4 text-emerald-500"/>Сроки: превью 48ч</li>
-                  <li className="flex items-start gap-2"><Check className="h-4 w-4 text-emerald-500"/>Цена: X (на 30–60% ниже)</li>
+                <ul className="space-y-2 text-sm text-gray-100">
+                  <li className="flex items-start gap-2"><Check className="h-4 w-4 text-emerald-400" />Фотореализм: высокий</li>
+                  <li className="flex items-start gap-2"><Check className="h-4 w-4 text-emerald-400" />Сроки: превью 48ч</li>
+                  <li className="flex items-start gap-2"><Check className="h-4 w-4 text-emerald-400" />Цена: X (на 30–60% ниже)</li>
                 </ul>
               </CardContent>
             </Card>
@@ -294,11 +394,45 @@ export default function Landing3D() {
         </div>
       </section>
 
+      {/* About */}
+      <section id="about" className="py-16">
+        <div className="max-w-6xl mx-auto px-4 grid md:grid-cols-2 gap-10 items-start">
+          <div>
+            <h2 className="text-3xl font-bold mb-4">Обо мне</h2>
+            <p className="text-gray-300 leading-relaxed mb-4">
+              Я Марат — спец по архвизу. Делаю не «красивые картинки», а кадры, которые помогают
+              продать идею проекта: они вызывают доверие у инвесторов и понятны покупателю, потому что выглядят как фото.
+            </p>
+            <p className="text-gray-300 leading-relaxed mb-4">
+              На счету — 50+ проектов по России: от частных интерьеров до жилых комплексов. Среди клиентов: СК «Золотое
+              Сечение», «Modul Modus», «Летник ПРО», «Базовый Модуль». Меня ценят за скорость и предсказуемость.
+            </p>
+            <p className="text-gray-300 leading-relaxed mb-4">
+              В отличие от студий, где один кадр делают неделями, первые превью показываю через 48 часов —
+              так быстрее согласовывать детали и экономить бюджет.
+            </p>
+            <p className="text-gray-300 leading-relaxed">
+              Политика простая: <span className="text-emerald-400 font-medium">правки входят в стоимость</span> до совпадения с ожиданиями.
+              Поэтому вы заранее понимаете итог и сроки — без сюрпризов.
+            </p>
+          </div>
+          <div className="bg-neutral-900 border border-neutral-800 rounded-2xl p-6">
+            <h3 className="text-xl font-semibold mb-3">Что нужно от вас для старта</h3>
+            <ul className="space-y-2 text-sm text-gray-300">
+              <li>Планировки/чертежи с размерами.</li>
+              <li>Краткое описание: материалы, стилистика, особенности.</li>
+              <li>Примеры/референсы желаемого результата.</li>
+            </ul>
+            <p className="mt-4 text-sm text-gray-400">Это поможет быстро оценить сроки и дать точную смету.</p>
+          </div>
+        </div>
+      </section>
+
       {/* Brief form */}
       <section id="brief" className="py-16">
         <div className="max-w-3xl mx-auto px-4">
-          <h2 className="text-3xl font-bold">Получить расчёт и тест‑рендер</h2>
-          <p className="text-gray-300 mt-2">Оставьте контакты — отправим 3 тестовых кадра и смету. Ответим в течение дня.</p>
+          <h2 className="text-3xl font-bold">Получить расчёт и тест-рендер</h2>
+          <p className="text-gray-300 mt-2">Оставьте контакты — пришлю 3 тестовых кадра и смету. Отвечу в течение дня.</p>
 
           <Card className="mt-6 rounded-2xl">
             <CardContent className="p-6">
@@ -308,16 +442,20 @@ export default function Landing3D() {
                 {/* Formspree meta */}
                 <input type="hidden" name="_subject" value="Новый лид: blenderast — расчёт + тест-рендер" />
                 <input type="hidden" name="_redirect" value="https://YOUR-DOMAIN/thank-you" />
+
                 <Input required name="name" placeholder="Имя" />
-                <Input required type="email" name="email" placeholder="E‑mail" />
+                <Input required type="email" name="email" placeholder="E-mail" />
                 <Input name="phone" placeholder="Телефон / WhatsApp" />
                 <Input name="city" placeholder="Город / Часовой пояс" />
                 <div className="md:col-span-2">
                   <Textarea name="details" placeholder="Опишите объект: площадь, стиль, сроки, референсы" className="min-h-[120px]" />
                 </div>
+
                 <div className="md:col-span-2 flex items-center justify-between gap-4">
-                  <div className="text-xs text-gray-400">Защита от спама: honeypot + ограничение частоты. Для боевого сайта добавьте Cloudflare Turnstile/reCAPTCHA.</div>
-                  <Button type="submit" className="rounded-2xl">Отправить запрос</Button>
+                  <div className="text-xs text-gray-400">
+                    Защита от спама: honeypot + ограничение частоты. Для боевого сайта добавьте Cloudflare Turnstile/reCAPTCHA.
+                  </div>
+                  <Button type="submit" className="rounded-2xl bg-emerald-500 text-neutral-900">Отправить запрос</Button>
                 </div>
               </form>
             </CardContent>
@@ -328,12 +466,28 @@ export default function Landing3D() {
       {/* FAQ */}
       <section id="faq" className="py-16 bg-neutral-900 border-t">
         <div className="max-w-6xl mx-auto px-4 grid md:grid-cols-2 gap-6">
-          <h2 className="text-3xl font-bold">Вопросы и ответы</h2>
-          <div className="space-y-4">
-            <FAQItem q="Сколько стоит кадр?" a="Зависит от сложности и исходников. В среднем на 30–60% ниже рынка. Пришлите планировки — посчитаем за день." />
-            <FAQItem q="Как быстро получу первый результат?" a="Через 48 часов покажем серый каркас или базовый свет/материалы на ключевых кадрах." />
-            <FAQItem q="Какие программы используете?" a="3ds Max/Blender, Corona/V-Ray/Cycles, Substance, Photoshop. Отдаём исходники по согласованию." />
-            <FAQItem q="Правки включены?" a="Да, два раунда базовых правок включены, дальше — по согласованной ставке." />
+          <div>
+            <h2 className="text-3xl font-bold">FAQ — Вопросы и ответы</h2>
+            <p className="mt-2 text-gray-400">Нажмите на вопрос, чтобы раскрыть ответ.</p>
+          </div>
+          <div className="space-y-3">
+            {[
+              {
+                q: "Сколько стоит кадр?",
+                a: "Зависит от сложности и исходников. В среднем на 30–60% ниже рынка. Пришлите планировки — посчитаю за день.",
+              },
+              {
+                q: "Как быстро получу первый результат?",
+                a: "Через 48 часов покажу серый каркас или базовый свет/материалы на ключевых кадрах.",
+              },
+              {
+                q: "Какие программы используете?",
+                a: "3ds Max/Blender, Corona/V-Ray/Cycles, Substance, Photoshop. Исходники — по согласованию.",
+              },
+              { q: "Правки включены?", a: "Да, 2 раунда базовых правок включены, дальше — почасово по прозрачной ставке." },
+            ].map((item, idx) => (
+              <AccordionItem key={idx} q={item.q} a={item.a} />
+            ))}
           </div>
         </div>
       </section>
@@ -341,7 +495,10 @@ export default function Landing3D() {
       {/* Footer */}
       <footer className="py-10 text-center text-sm text-gray-400">
         <div className="max-w-6xl mx-auto px-4">
-          © {new Date().getFullYear()} blenderast — 3D архитектурная визуализация. <a className="underline" href="#brief">Связаться</a>
+          © {new Date().getFullYear()} blenderast — 3D архитектурная визуализация.{" "}
+          <a className="underline" href="#brief">
+            Связаться
+          </a>
           <div className="mt-2">Политика конфиденциальности · Договор оферты</div>
         </div>
       </footer>
