@@ -348,80 +348,110 @@ export default function Landing3D() {
         </div>
       </header>
 
-      {/* HERO */}
-      <section className="relative overflow-hidden">
-        <div className="max-w-6xl mx-auto px-4 py-16 grid md:grid-cols-2 gap-10 items-center">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-          >
-            <h1 className="text-4xl md:text-5xl font-bold leading-tight">
-              <span className="bg-gradient-to-r from-sky-400 via-cyan-300 to-emerald-300 bg-clip-text text-transparent">
-                Фотореалистичная 3D-визуализация
-              </span>{" "}
-              без переплаты
-            </h1>
-            <p className="mt-4 text-gray-300 text-lg">
-              Реализм выше рынка, стоимость ниже конкурентов. В среднем экономим заказчикам до 30–40% бюджета без потери качества.
-            </p>
-            <div className="mt-6 flex gap-3">
-              <a href="#work">
-                <Button className="rounded-2xl bg-emerald-500 text-neutral-900" variant="default">
-                  Смотреть работы
-                </Button>
-              </a>
-              <a href="#brief">
-                <Button
-                  className="rounded-2xl border-emerald-500 text-emerald-400 hover:bg-emerald-900/40"
-                  variant="outline"
-                >
-                  Получить 3 кадра теста <MoveRight className="inline h-4 w-4 ml-1" />
-                </Button>
-              </a>
-            </div>
-            <div className="mt-8 grid grid-cols-3 md:w-3/4">
-              <Stat value="10+" label="лет опыта" />
-              <Stat value="> 200" label="проектов" />
-              <Stat value="48ч" label="первые превью" />
-            </div>
-          </motion.div>
+      {/* Hero */}
+<section className="relative overflow-hidden">
+  <div className="max-w-6xl mx-auto px-4 py-16 grid md:grid-cols-2 gap-10 items-center">
 
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            className="relative"
-          >
-            <motion.div
-              initial={{ rotate: -6, y: 20 }}
-              whileInView={{ rotate: 0, y: 0 }}
-              transition={{ type: "spring", stiffness: 70 }}
-              className="grid grid-cols-2 gap-3"
-            >
-              {portfolio.slice(0, 4).map((p, i) => (
-                <motion.img
-                  key={i}
-                  src={p.cover || p.images[0]}
-                  alt={p.title}
-                  className="rounded-2xl shadow-sm object-cover h-40 md:h-56 w-full"
-                  whileHover={{ scale: 1.03 }}
-                />
-              ))}
-            </motion.div>
-            <motion.div
-              className="pointer-events-none absolute inset-0 rounded-[40px]"
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              transition={{ duration: 1.2, delay: 0.2 }}
-              style={{ boxShadow: "inset 0 0 120px rgba(255,255,255,0.06)" }}
-            />
-          </motion.div>
-        </div>
-      </section>
+    {/* Левый столбец — оффер */}
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.6 }}
+    >
+      <h1 className="text-4xl md:text-5xl font-bold leading-tight">
+        <span className="bg-gradient-to-r from-sky-400 via-cyan-300 to-emerald-300 bg-clip-text text-transparent">
+          Фотореалистичная 3D-визуализация
+        </span>{" "}
+        без переплаты
+      </h1>
+      <p className="mt-4 text-gray-300 text-lg">
+        Реализм выше рынка, стоимость ниже конкурентов. В среднем экономия 30–40% без потери качества.
+      </p>
 
+      <div className="mt-6 flex gap-3">
+        <a href="#work">
+          <Button className="rounded-2xl bg-emerald-500 text-neutral-900">Смотреть работы</Button>
+        </a>
+        <a href="#brief">
+          <Button
+            variant="outline"
+            className="rounded-2xl border-emerald-500 text-emerald-400 hover:bg-emerald-900/40"
+          >
+            Получить 3 тест-кадра <MoveRight className="inline h-4 w-4 ml-1" />
+          </Button>
+        </a>
+      </div>
+
+      <div className="mt-8 grid grid-cols-3 md:w-3/4">
+        <Stat value="10+" label="лет опыта" />
+        <Stat value="> 200" label="проектов" />
+        <Stat value="48ч" label="первые превью" />
+      </div>
+    </motion.div>
+
+    {/* Правый столбец — одно фото с красивой анимацией */}
+    <motion.div
+      className="relative group"
+      initial={{ opacity: 0, scale: 0.98, y: 20 }}
+      whileInView={{ opacity: 1, scale: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.8, ease: "easeOut" }}
+      whileHover={{ y: -6 }}
+    >
+      {/* Глоу-подсветка за кадром */}
+      <div
+        className="absolute -inset-6 rounded-[28px] blur-3xl opacity-30 group-hover:opacity-60 transition-opacity"
+        style={{ background: "radial-gradient(600px 240px at 60% 40%, rgba(16,185,129,.35), transparent 60%)" }}
+      />
+
+      {/* Карточка с изображением */}
+      <motion.div
+        className="relative rounded-2xl overflow-hidden border border-neutral-800 bg-neutral-900/40"
+        initial={{ rotate: -0.6 }}
+        whileHover={{ rotate: 0 }}
+        transition={{ type: "spring", stiffness: 70 }}
+      >
+        {/* Положи файл в /public/hero-3d.jpg или подставь свой URL */}
+        <motion.img
+          src="/hero-3d.jpg"
+          alt="Рабочая сцена 3D-визуализации"
+          className="block w-full h-[360px] md:h-[460px] object-cover"
+          initial={{ scale: 1.02, opacity: 0 }}
+          whileInView={{ scale: 1.0, opacity: 1 }}
+          whileHover={{ scale: 1.05 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+        />
+
+        {/* Блик при ховере */}
+        <motion.div
+          className="pointer-events-none absolute inset-0"
+          initial={{ opacity: 0 }}
+          whileHover={{ opacity: 1 }}
+          transition={{ duration: 0.5 }}
+          style={{
+            background:
+              "linear-gradient(120deg, transparent 20%, rgba(255,255,255,.08) 35%, transparent 55%)",
+          }}
+        />
+
+        {/* Неоновая рамка при ховере */}
+        <div className="absolute inset-0 rounded-2xl ring-1 ring-transparent group-hover:ring-emerald-500/50 transition-all" />
+      </motion.div>
+
+      {/* Плавающий бейдж */}
+      <motion.div
+        className="absolute -bottom-4 left-6 right-auto px-3 py-1.5 rounded-full text-xs bg-black/60 border border-neutral-800"
+        initial={{ opacity: 0, y: 10 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+      >
+        Рабочая сцена • Blender / HDRI / PBR
+      </motion.div>
+    </motion.div>
+  </div>
+</section>
       {/* WHY */}
       <section id="why" className="py-14 bg-neutral-900 border-y scroll-mt-24">
         <motion.div
