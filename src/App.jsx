@@ -388,12 +388,9 @@ export default function Landing3D() {
         <Stat value="> 200" label="проектов" />
         <Stat value="48ч" label="первые превью" />
       </div>
-      
-</div>
-
     </motion.div>
 
-    {/* Правый столбец */}
+    {/* Правый столбец — одно фото с красивой анимацией */}
     <motion.div
       className="relative group"
       initial={{ opacity: 0, scale: 0.98, y: 20 }}
@@ -416,7 +413,7 @@ export default function Landing3D() {
         transition={{ type: "spring", stiffness: 70 }}
       >
         <motion.img
-          src="/hero-3d.jpg"
+          src="/file/hero-3d.jpg"
           alt="Рабочая сцена 3D-визуализации"
           className="block w-full h-[360px] md:h-[460px] object-cover"
           initial={{ scale: 1.02, opacity: 0 }}
@@ -425,6 +422,8 @@ export default function Landing3D() {
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
         />
+
+        {/* Блик при ховере */}
         <motion.div
           className="pointer-events-none absolute inset-0"
           initial={{ opacity: 0 }}
@@ -435,8 +434,12 @@ export default function Landing3D() {
               "linear-gradient(120deg, transparent 20%, rgba(255,255,255,.08) 35%, transparent 55%)",
           }}
         />
+
+        {/* Неоновая рамка при ховере */}
         <div className="absolute inset-0 rounded-2xl ring-1 ring-transparent group-hover:ring-emerald-500/50 transition-all" />
       </motion.div>
+
+      {/* Плавающий бейдж */}
       <motion.div
         className="absolute -bottom-4 left-6 right-auto px-3 py-1.5 rounded-full text-xs bg-black/60 border border-neutral-800"
         initial={{ opacity: 0, y: 10 }}
@@ -546,7 +549,7 @@ export default function Landing3D() {
         </motion.div>
       </section>
 
-      {/* ABOUT */}
+      {/* ABOUT (расширённый + чек-лист) */}
       <section id="about" className="py-16 scroll-mt-24">
         <div className="max-w-6xl mx-auto px-4 grid md:grid-cols-2 gap-10 items-start">
           <div>
@@ -618,7 +621,7 @@ export default function Landing3D() {
         </div>
       </section>
 
-      {/* BRIEF FORM */}
+      {/* BRIEF FORM (центр + передача из калькулятора + upload) */}
       <section id="brief" className="py-16 scroll-mt-24">
         <div className="max-w-3xl mx-auto px-4">
           <h2 className="text-3xl font-bold">Получить расчёт и тест-рендер</h2>
@@ -632,9 +635,13 @@ export default function Landing3D() {
                 encType="multipart/form-data"
                 className="grid md:grid-cols-2 gap-4"
               >
+                {/* Honeypot */}
                 <input type="text" name="website" className="hidden" tabIndex={-1} autoComplete="off" />
+                {/* Formspree meta */}
                 <input type="hidden" name="_subject" value="Новый лид: blenderast — расчёт + тест-рендер" />
                 <input type="hidden" name="_redirect" value="https://YOUR-DOMAIN/thank-you" />
+
+                {/* Передаём сводку калькулятора */}
                 <input type="hidden" name="quote_total" value={quote?.total ?? ""} />
                 <input type="hidden" name="quote_breakdown" value={JSON.stringify(quote?.breakdown || {})} />
                 <input
@@ -668,7 +675,11 @@ export default function Landing3D() {
 
                 <Input name="deadline" placeholder="Сроки (например: 10–14 дней)" />
                 <Input name="budget" placeholder="Ориентир по бюджету" />
+
+                {/* Кол-во ракурсов — база 3 + допы из калькулятора */}
                 <Input name="angles" placeholder="Количество ракурсов" value={3 + (quote?.qtyAngle || 0)} readOnly />
+
+                {/* Референсы/файлы */}
                 <div className="md:col-span-2">
                   <label className="block text-sm mb-1">Загрузка референсов (изображения/PDF/ZIP до 20MB)</label>
                   <input
@@ -690,13 +701,15 @@ export default function Landing3D() {
 
                 <div className="md:col-span-2 flex items-center justify-between gap-4">
                   <div className="text-xs text-gray-400">
-                    Защита: honeypot + ограничение частоты. Для продакшна - Cloudflare Turnstile/reCAPTCHA.
+                    Защита: honeypot + ограничение частоты. Для продакшна Cloudflare Turnstile/reCAPTCHA.
                   </div>
                   <Button type="submit" className="rounded-2xl bg-emerald-500 text-neutral-900">
                     Отправить запрос
                   </Button>
                 </div>
               </form>
+
+              {/* Визуальная сводка калькулятора прямо под формой */}
               <div className="mt-6 rounded-xl border border-neutral-800 bg-neutral-900 p-4 text-sm text-gray-300">
                 <div className="flex items-center justify-between">
                   <span>Текущая смета:</span>
