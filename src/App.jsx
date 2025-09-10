@@ -352,12 +352,13 @@ export default function Landing3D() {
 <section className="relative overflow-hidden">
   <div className="max-w-6xl mx-auto px-4 py-16 grid md:grid-cols-2 gap-10 items-center">
 
-    {/* Левый столбец — оффер */}
+    {/* Левый столбец */}
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.6 }}
+      className="relative"
     >
       <h1 className="text-4xl md:text-5xl font-bold leading-tight">
         <span className="bg-gradient-to-r from-sky-400 via-cyan-300 to-emerald-300 bg-clip-text text-transparent">
@@ -365,6 +366,7 @@ export default function Landing3D() {
         </span>{" "}
         без переплаты
       </h1>
+
       <p className="mt-4 text-gray-300 text-lg">
         Реализм выше рынка, стоимость ниже конкурентов. В среднем экономия 30–40% без потери качества.
       </p>
@@ -385,12 +387,38 @@ export default function Landing3D() {
 
       <div className="mt-8 grid grid-cols-3 md:w-3/4">
         <Stat value="10+" label="лет опыта" />
-        <Stat value="> 200" label="проектов" />
+        <Stat value="&gt; 200" label="проектов" />
         <Stat value="48ч" label="первые превью" />
+      </div>
+
+      {/* Центр внизу левого блока — Telegram CTA */}
+      <div className="mt-8 flex flex-col items-center">
+        <div className="text-xs uppercase tracking-wide text-sky-300/90 mb-2">
+          Связь со мной вне Kwork
+        </div>
+
+        <motion.a
+          href="https://t.me/a123123123a1"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-3 rounded-2xl px-6 py-4 text-lg font-semibold
+                     bg-[#229ED9] text-white shadow-lg shadow-sky-500/30
+                     hover:bg-[#1f95cf] focus:outline-none focus:ring-2 focus:ring-sky-400/80"
+          initial={{ y: 0 }}
+          animate={{ y: [0, -5, 0] }}
+          transition={{ duration: 1.6, repeat: Infinity, repeatType: "mirror", ease: "easeInOut" }}
+          aria-label="Открыть Telegram @a123123123a1"
+        >
+          {/* Иконка Telegram (SVG, без зависимостей) */}
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M21.5 3.5L2.9 10.6c-.9.35-.89 1.65.03 1.96l4.52 1.6 2 6.19c.26.82 1.3 1.06 1.9.44l2.77-2.86 4.83 3.67c.76.58 1.86.16 2.07-.78l3.37-15.2c.21-.95-.7-1.75-1.62-1.37Z" fill="white"/>
+          </svg>
+          Telegram @a123123123a1
+        </motion.a>
       </div>
     </motion.div>
 
-    {/* Правый столбец — одно фото с красивой анимацией */}
+    {/* Правый столбец */}
     <motion.div
       className="relative group"
       initial={{ opacity: 0, scale: 0.98, y: 20 }}
@@ -399,13 +427,10 @@ export default function Landing3D() {
       transition={{ duration: 0.8, ease: "easeOut" }}
       whileHover={{ y: -6 }}
     >
-      {/* Глоу-подсветка за кадром */}
       <div
         className="absolute -inset-6 rounded-[28px] blur-3xl opacity-30 group-hover:opacity-60 transition-opacity"
         style={{ background: "radial-gradient(600px 240px at 60% 40%, rgba(16,185,129,.35), transparent 60%)" }}
       />
-
-      {/* Карточка с изображением */}
       <motion.div
         className="relative rounded-2xl overflow-hidden border border-neutral-800 bg-neutral-900/40"
         initial={{ rotate: -0.6 }}
@@ -422,8 +447,6 @@ export default function Landing3D() {
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
         />
-
-        {/* Блик при ховере */}
         <motion.div
           className="pointer-events-none absolute inset-0"
           initial={{ opacity: 0 }}
@@ -434,12 +457,8 @@ export default function Landing3D() {
               "linear-gradient(120deg, transparent 20%, rgba(255,255,255,.08) 35%, transparent 55%)",
           }}
         />
-
-        {/* Неоновая рамка при ховере */}
         <div className="absolute inset-0 rounded-2xl ring-1 ring-transparent group-hover:ring-emerald-500/50 transition-all" />
       </motion.div>
-
-      {/* Плавающий бейдж */}
       <motion.div
         className="absolute -bottom-4 left-6 right-auto px-3 py-1.5 rounded-full text-xs bg-black/60 border border-neutral-800"
         initial={{ opacity: 0, y: 10 }}
@@ -450,7 +469,8 @@ export default function Landing3D() {
       </motion.div>
     </motion.div>
   </div>
- </section>
+</section>
+
       {/* WHY */}
       <section id="why" className="py-14 bg-neutral-900 border-y scroll-mt-24">
         <motion.div
