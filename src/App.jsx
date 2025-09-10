@@ -392,11 +392,7 @@ export default function Landing3D() {
       </div>
 
       {/* Центр внизу левого блока — Telegram CTA */}
-      <div className="mt-8 flex flex-col items-center">
-        <div className="text-xs uppercase tracking-wide text-sky-300/90 mb-2">
-          Связь со мной вне Kwork
-        </div>
-
+      <div className="mt-4 flex flex-col items-center">
         <motion.a
           href="https://t.me/a123123123a1"
           target="_blank"
@@ -409,11 +405,10 @@ export default function Landing3D() {
           transition={{ duration: 1.6, repeat: Infinity, repeatType: "mirror", ease: "easeInOut" }}
           aria-label="Открыть Telegram @a123123123a1"
         >
-          {/* Иконка Telegram (SVG, без зависимостей) */}
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
             <path d="M21.5 3.5L2.9 10.6c-.9.35-.89 1.65.03 1.96l4.52 1.6 2 6.19c.26.82 1.3 1.06 1.9.44l2.77-2.86 4.83 3.67c.76.58 1.86.16 2.07-.78l3.37-15.2c.21-.95-.7-1.75-1.62-1.37Z" fill="white"/>
           </svg>
-          Telegram @a123123123a1
+          Связь со мной вне Kwork
         </motion.a>
       </div>
     </motion.div>
