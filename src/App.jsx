@@ -687,7 +687,7 @@ export default function Landing3D() {
 
                 <div className="md:col-span-2 flex items-center justify-between gap-4">
                   <div className="text-xs text-gray-400">
-                    Защита: honeypot + ограничение частоты. Для продакшна добавьте Cloudflare Turnstile/reCAPTCHA.
+                    Защита: honeypot + ограничение частоты. Для продакшна - Cloudflare Turnstile/reCAPTCHA.
                   </div>
                   <Button type="submit" className="rounded-2xl bg-emerald-500 text-neutral-900">
                     Отправить запрос
