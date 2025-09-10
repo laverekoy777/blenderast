@@ -450,31 +450,7 @@ export default function Landing3D() {
       </motion.div>
     </motion.div>
   </div>
-  {/* Telegram CTA */}
-<div className="mt-6">
-  <div className="text-xs uppercase tracking-wide text-sky-300/90 mb-2">
-    Связь со мной вне Kwork
-  </div>
-
-  <motion.a
-    href="https://t.me/a123123123a1"
-    target="_blank"
-    rel="noopener noreferrer"
-    className="inline-flex items-center gap-2 rounded-2xl px-5 py-4 text-lg font-semibold
-               bg-[#229ED9] text-white shadow-lg shadow-sky-500/30
-               hover:bg-[#1f95cf] focus:outline-none focus:ring-2 focus:ring-sky-400/80"
-    initial={{ y: 0, boxShadow: "0 10px 25px rgba(14,165,233,0.25)" }}
-    animate={{ y: [0, -5, 0] }}
-    transition={{ duration: 1.6, repeat: Infinity, repeatType: "mirror", ease: "easeInOut" }}
-    whileHover={{ scale: 1.03 }}
-    aria-label="Открыть Telegram @a123123123a1"
-  >
-    <Send className="h-5 w-5" />
-    Telegram @a123123123a1
-  </motion.a>
-</div>
-
-</section>
+ </section>
       {/* WHY */}
       <section id="why" className="py-14 bg-neutral-900 border-y scroll-mt-24">
         <motion.div
